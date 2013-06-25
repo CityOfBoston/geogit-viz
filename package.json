@@ -1,0 +1,17 @@
+{
+    "name": "geogit-viz"
+  , "version": "0.0.1"
+  , "private": true
+  , "dependencies": {
+      "express": "2.5.8"
+    , "jade": ">= 0.0.1"
+    , "request": "2.21.X"
+  },
+  "engines": {
+    "node": "0.8.x",
+    "npm":  "1.1.x"
+  },
+  "scripts": {
+    "start": "node app.js"
+  }
+}
