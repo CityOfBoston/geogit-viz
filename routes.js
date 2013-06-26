@@ -33,9 +33,9 @@ module.exports = function(app){
         var permit = osmdoc.node('node').attr({
           id: points[pt].attributes.APBLDGKEY, // I think this is a unique key
           lat: points[pt].geometry.y,
-          lng: points[pt].geometry.x,
-          user: 'xx-0',
-          uid: 'xx-0',
+          lon: points[pt].geometry.x,
+          user: 'mapmeld',
+          uid: '0',
           visible: 'true',
           version: '1',
           changeset: '1',
