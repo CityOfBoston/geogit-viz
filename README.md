@@ -6,6 +6,10 @@ Sample diff:
 
 <img src="https://raw.github.com/mapmeld/geogit-viz/master/screenshot.png"/>
 
+Real data diff using Boston's Permits service
+
+<img src="https://raw.github.com/mapmeld/geogit-viz/master/permitdiff.png"/>
+
 ## Goal
 
 * GeoGit script keeps track of changes to the city's data via ArcGIS REST API
