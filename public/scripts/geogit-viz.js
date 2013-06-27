@@ -1,4 +1,4 @@
-var map = L.map('map').setView( [ 42.332588, -122.855999 ], 15 );
+var map = L.map('map').setView( [ 42.361207, -71.06506 ], 13 );
 map.attributionControl.setPrefix('');
 
 // add an OpenStreetMap tile layer
@@ -25,7 +25,14 @@ var mapfeature = function(feature){
   else if(feature.change == "REMOVED"){
     color = "#ff0000";
   }
-  lyr.setStyle({ clickable: false, color: color });
+  if(typeof lyr.setStyle != "undefined"){
+    // line or polygon
+    lyr.setStyle({ clickable: false, color: color });
+  }
+  else{
+    // change marker to circle
+    lyr = new L.CircleMarker( lyr.getLatLng(), { clickable: false, color: color, opacity: 0.8, fillOpacity: 0.8 } );
+  }
   map.addLayer(lyr);
 };
 
@@ -41,6 +48,6 @@ var mapme = function(json){
 };
 
 var s = document.createElement('script');
-s.src = "http://localhost:8080/geogit/diff?oldRefSpec=34e441ae968e4b42c2c90ecc144f088becc37c8b&output_format=json&all=true&showGeometryChanges=true&callback=mapme";
+s.src = "http://localhost:8080/geogit/diff?oldRefSpec=b6b12e83119dc91f7ad7204c07996b2e50c15665&output_format=json&all=true&showGeometryChanges=true&callback=mapme";
 s.type = "text/javascript";
 document.body.appendChild(s);
