@@ -8,13 +8,23 @@ module.exports = function(app){
     res.render('map', { });
   });
   
-  app.get('/geocode', function(req, res){
+  app.get('/featuredetails', function(req, res){
+    var path = req.query.path;
+    var gitid = req.query.gitid;
     var requestOptions = {
-      'uri': 'http://geocoder.us/service/csv/geocode?address=' + encodeURIComponent( req.query.address ),
+      'uri': 'http://localhost:8080/geogit/repo/objects/' + gitid
     };
     request(requestOptions, function (err, response, b) {
-      b = b.split(',');
-      res.json({ x: b[1] * 1.0, y: b[0] * 1.0 });
+      var details = b.split('|');
+      var attributes = {};
+      for(var a=0;a<details.length;a++){
+        attributes[ details[a].split(":")[0] ] = details[a].split(":")[1];
+      }
+      res.json({
+        gitid: gitid,
+        path: path,
+        attributes: attributes
+      });
     });
   });
   
