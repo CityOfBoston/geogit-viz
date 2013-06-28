@@ -10,6 +10,11 @@ Real data diff using Boston's Permits service
 
 <img src="https://raw.github.com/mapmeld/geogit-viz/master/permitdiff.png"/>
 
+Dial-a-Diff: compare any commits in the GeoGit repo history
+
+<img src="https://raw.github.com/mapmeld/geogit-viz/master/dialadiff.png"/>
+
+
 ## Goal
 
 * GeoGit script keeps track of changes to the city's data via ArcGIS REST API
