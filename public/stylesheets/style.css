@@ -6,3 +6,23 @@ html, body, #map{
   margin: 0;
   padding: 0;
 }
+
+#sidebar{
+  width: 15%;
+  padding: 20px;
+  float: left;
+}
+
+#map{
+  width: 80%;
+  float: left;
+}
+
+div.commit{
+  margin-bottom: 8px;
+  vertical-align: middle;
+}
+
+div.commit input{
+  margin-right: 16px;
+}
