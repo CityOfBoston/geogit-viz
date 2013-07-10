@@ -54,7 +54,7 @@ var mapfeature = function(feature){
     $.getJSON("/featuredetails?url=" + encodeURIComponent(myurl) + "&path=" + encodeURIComponent(feature.newPath) + "&gitid=" + feature.newObjectId, function(data){
       var table = '<table border="1">';
       for(key in data.attributes){
-        var keyfix = key.split(');
+        var keyfix = key.split('^@^H^A');
         keyfix = keyfix[ keyfix.length - 1 ];
         if(keyfix.indexOf("DTTM") > -1){
           // datetime print
