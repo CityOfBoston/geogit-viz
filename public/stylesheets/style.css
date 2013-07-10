@@ -21,8 +21,13 @@ html, body, #map{
 div.commit{
   margin-bottom: 8px;
   vertical-align: middle;
+  text-align: right;
 }
 
 div.commit input{
   margin-right: 16px;
+}
+
+small{
+  padding-left: 8px;
 }

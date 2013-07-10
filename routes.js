@@ -12,7 +12,7 @@ module.exports = function(app){
     var path = req.query.path;
     var gitid = req.query.gitid;
     var requestOptions = {
-      'uri': 'http://localhost:8080/geogit/repo/objects/' + gitid
+      'uri': req.query.url + ':8080/geogit/repo/objects/' + gitid
     };
     request(requestOptions, function (err, response, b) {
       var details = b.split('|');
