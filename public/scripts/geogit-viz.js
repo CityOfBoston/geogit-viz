@@ -1,6 +1,6 @@
 var knownFeatures = { };
 
-var map = L.map('map').setView( [ 42.361207, -71.06506 ], 13 );
+var map = L.map('map').setView( [ 42.361207, -71.06506 ], 12 );
 map.attributionControl.setPrefix('');
 
 var myurl = "http:" + (window.location+"").split(":")[1];
@@ -45,13 +45,22 @@ var mapfeature = function(feature){
     map.addLayer(lyr);
   }
   else{
-    if(typeof knownFeatures[ feature.newPath ] != "undefined"){
-      knownFeatures[ feature.newPath ].gitid = feature.newObjectId;
+//    if(typeof knownFeatures[ feature.newPath || feature.path || feature ] != "undefined"){
+
+      if( feature.newObjectId == "0000000000000000000000000000000000000000"){
+        // removed
+        knownFeatures[ feature.newPath || feature.path || feature ].gitid = feature.oldObjectId;
+      }
+      else{
+        // added or modified
+        knownFeatures[ feature.newPath || feature.path || feature ].gitid = feature.newObjectId;
+      }
+//    }
+    var fetchid = feature.newObjectId;
+    if(fetchid == "0000000000000000000000000000000000000000"){
+      fetchid = feature.oldObjectId;
     }
-    else{
-      knownFeatures[ feature.newPath ] = { gitid: feature.newObjectId };
-    }
-    $.getJSON("/featuredetails?url=" + encodeURIComponent(myurl) + "&path=" + encodeURIComponent(feature.newPath) + "&gitid=" + feature.newObjectId, function(data){
+    $.getJSON("/featuredetails?url=" + encodeURIComponent(myurl) + "&path=" + encodeURIComponent(feature.newPath || feature.path) + "&gitid=" + fetchid, function(data){
       var table = '<table border="1">';
       for(key in data.attributes){
         var keyfix = key.split('^@^H^A');
@@ -63,7 +72,12 @@ var mapfeature = function(feature){
         table += '<tr><td><strong>' + keyfix + '</strong></td><td>' + data.attributes[key].split('mapmeld')[0] + '</td></tr>';
       }
       table += '</table>';
-      knownFeatures[ data.path ].geo.bindPopup(table);
+      try{
+        knownFeatures[ data.path ].geo.bindPopup(table);
+      }
+      catch(e){
+        console.error( data );
+      }
     });
   }
 };
@@ -127,7 +141,7 @@ var logged = function(json){
     to = 0;
     
     li.innerHTML = fromRadio + toRadio + mydate + '';
-    document.getElementById("sidebar").appendChild(li);
+    document.getElementById("commitlist").appendChild(li);
   }
 };
 
