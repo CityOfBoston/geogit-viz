@@ -44,6 +44,12 @@ Dial-a-Diff: compare any commits in the GeoGit repo history
         cd ~/mygeodata
         geogit init
 
+* **If you already have your data source**, make your initial commit now
+
+        geogit shp import using_a_shapefile.shp
+        geogit add
+        geogit commit -m "initial commit"
+
 * Start geogit's built-in API server
 
         cd ~/GeoGit/src/parent
@@ -76,6 +82,8 @@ Dial-a-Diff: compare any commits in the GeoGit repo history
 
 ### Update data
 
+* If you already have a shapefile, OSM XML, Spatialite, or PostGIS database, you can use geogit to continue importing, adding, and commiting that data. You're all set!
+
 * geogit-viz has two example updaters which save ArcGIS REST API service data as OSM-format XML files (/update\_from\_gis and /update\_dev\_projects)
 
 * Stop your GeoGit web API processes before importing data
@@ -83,11 +91,13 @@ Dial-a-Diff: compare any commits in the GeoGit repo history
 * Import and commit data to your GeoGit repo. The response after 'geogit commit' will let you know if any points were added, modified, or removed.
 
         cd ~/mygeodata
-        geogit osm import ../geogit-viz/osmout.osm
+        geogit osm import ../geogit-viz/osmoutput.osm
         geogit add
         geogit commit -m "updated geodata from server"
 
 * Restart API processes.
+
+* You won't see changes on the map until your second commit. Until then, you can verify the API is working at http://localhost:8080 and http://localhost:8080/geogit/log 
 
 ## Goal
 
