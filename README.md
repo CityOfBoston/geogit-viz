@@ -33,12 +33,12 @@ Dial-a-Diff: compare any commits in the GeoGit repo history
 
 ### Set up your GeoGit repo and API
 
-* Set geogit user and e-mail
+* Set geogit user and e-mail. If you have issues see https://github.com/opengeo/GeoGit/issues/342
 
         geogit config --global user.name "Your Name"
         geogit config --global user.email "name@example.com"
 
-* Create a geogit repo somewhere
+* Create a geogit repo somewhere. If you have issues see https://github.com/opengeo/GeoGit/issues/342
 
         mkdir ~/mygeodata
         cd ~/mygeodata
