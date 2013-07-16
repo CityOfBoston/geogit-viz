@@ -3,10 +3,6 @@
   small From|To
   br
   div#commitlist
-  
-  h4 Downloads
-  a(href="/shp.zip") SHP
-  a(href="/osm.osm") OSM
 
 #map
 
@@ -22,4 +18,7 @@ script(type="text/javascript", src="/scripts/wicket.js")
 script(type="text/javascript", src="/scripts/wicket-leaflet.js")
 
 script(type="text/javascript", src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js")
+
+script(type="text/javascript") var port = #{port};
+
 script(type="text/javascript", src="/scripts/geogit-viz.js")

@@ -7,6 +7,7 @@
     , "jade": ">= 0.0.1"
     , "request": "2.21.X"
     , "libxmljs": "0.8.X"
+    , "xml2js": "0.2.X"
   },
   "engines": {
     "node": "0.8.x",

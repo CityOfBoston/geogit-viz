@@ -60,7 +60,7 @@ var mapfeature = function(feature){
     if(fetchid == "0000000000000000000000000000000000000000"){
       fetchid = feature.oldObjectId;
     }
-    $.getJSON("/featuredetails?url=" + encodeURIComponent(myurl) + "&path=" + encodeURIComponent(feature.newPath || feature.path) + "&gitid=" + fetchid, function(data){
+    $.getJSON("/featuredetails?port=" + port + "&url=" + encodeURIComponent(myurl) + "&path=" + encodeURIComponent(feature.newPath || feature.path) + "&gitid=" + fetchid, function(data){
       var table = '<table border="1">';
       for(key in data.attributes){
         var keyfix = key.split('^@^H^A');
@@ -92,7 +92,7 @@ var mapme = function(json){
     mapfeature( json.response.Feature );
   }
   var s = document.createElement('script');
-  s.src = myurl + ":8080/geogit/diff?oldRefSpec=" + tree_root + "&output_format=json&all=true&callback=maptoattr";
+  s.src = myurl + ":" + port + "/geogit/diff?oldRefSpec=" + tree_root + "&output_format=json&all=true&callback=maptoattr";
   s.type = "text/javascript";
   document.body.appendChild(s);
 };
@@ -116,7 +116,7 @@ var logged = function(json){
 
   // call for features
   var s = document.createElement('script');
-  s.src = myurl + ":8080/geogit/diff?oldRefSpec=" + tree_root + "&output_format=json&all=true&showGeometryChanges=true&callback=mapme";
+  s.src = myurl + ":" + port + "/geogit/diff?oldRefSpec=" + tree_root + "&output_format=json&all=true&showGeometryChanges=true&callback=mapme";
   s.type = "text/javascript";
   document.body.appendChild(s);
 
@@ -185,13 +185,13 @@ var updateDiff = function(){
     return;
   }
   var s = document.createElement('script');
-  s.src = myurl + ":8080/geogit/diff?oldRefSpec=" + diffs[from] + "&newRefSpec=" + diffs[to] + "&output_format=json&all=true&showGeometryChanges=true&callback=mapme";
+  s.src = myurl + ":" + port + "/geogit/diff?oldRefSpec=" + diffs[from] + "&newRefSpec=" + diffs[to] + "&output_format=json&all=true&showGeometryChanges=true&callback=mapme";
   s.type = "text/javascript";
   document.body.appendChild(s);
 }
 
 // call for commit log
 var s = document.createElement('script');
-s.src = myurl + ":8080/geogit/log?output_format=json&callback=logged";
+s.src = myurl + ":" + port + "/geogit/log?output_format=json&callback=logged";
 s.type = "text/javascript";
 document.body.appendChild(s);
