@@ -121,11 +121,15 @@ var logged = function(json){
   document.body.appendChild(s);
 
   diffs = [ ];
+
+  var commit_table = document.createElement('table');
+  document.getElementById("commitlist").appendChild(commit_table);
+
   for(var c=0;c<json.response.commit.length;c++){
     diffs.push( json.response.commit[c].id );
   
-    var li = document.createElement("div");
-    li.className = "commit";
+    var tr = document.createElement("tr");
+    tr.className = "commit";
     var mydate = (new Date(json.response.commit[c].committer.timestamp)).toUTCString();
     var fromRadio = '<input id="from' + c + '" name="from" type="radio" onchange="setFrom(' + c + ')"/>';
     if(c == json.response.commit.length-1){
@@ -140,8 +144,8 @@ var logged = function(json){
     }
     to = 0;
     
-    li.innerHTML = fromRadio + toRadio + mydate + '';
-    document.getElementById("commitlist").appendChild(li);
+    tr.innerHTML = '<td>' + fromRadio + '</td><td>' + toRadio + '</td><td>' + mydate + '</td>';
+    commit_table.appendChild(tr);
   }
 };
 
