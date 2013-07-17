@@ -20,7 +20,7 @@ Dial-a-Diff: compare any commits in the GeoGit repo history
 
 * Install git
 
-* Download GeoGit from GitHub - the stable download does not include the web API!
+* Download GeoGit from my GitHub - the stable download does not include the web API, and OpenGeo does not yet support time-enabled commits.
 
         git clone https://github.com/opengeo/GeoGit.git ~/GeoGit
 
@@ -98,6 +98,25 @@ Dial-a-Diff: compare any commits in the GeoGit repo history
 * Restart API processes.
 
 * You won't see changes on the map until your second commit. Until then, you can verify the API is working at http://localhost:8080 and http://localhost:8080/geogit/log 
+
+### Import a repo from GitHub
+
+Are you already sharing maps on GitHub?  GeoGit can import your GeoJSON files into a GeoGit commit history.
+
+* Enable OAuth and add your keys to the generatefromgit.py script:
+
+        #useOAuth = False
+        useOAuth = True
+        client_id = "x"
+        client_secret = "x"
+
+* Edit the repo in the generatefromgit.py script:
+
+        repo = "USERNAME/REPONAME"
+
+* Create and populate the repo using this script
+
+        python generatefromgit.py
 
 ## Goal
 
