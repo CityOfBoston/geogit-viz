@@ -31,3 +31,7 @@ div.commit input{
 small{
   padding-left: 8px;
 }
+
+td{
+  padding-bottom: 10px;
+}

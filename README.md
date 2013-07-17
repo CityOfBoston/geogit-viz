@@ -71,7 +71,7 @@ Dial-a-Diff: compare any commits in the GeoGit repo history
         npm install
         node app.js
 
-* View the map at http://localhost:3000 - note that no data will be visible in your initial commit
+* View the map at http://localhost - note that no data will be visible in your initial commit
 
 ### Add more repos
 

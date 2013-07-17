@@ -20,6 +20,12 @@ module.exports = function(app){
       port: 8081
     });
   });
+
+  app.get('/gitimport', function(req, res){
+    res.render('map', {
+      port: 8082
+    });
+  });
   
   app.get('/featuredetails', function(req, res){
     var path = req.query.path;

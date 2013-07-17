@@ -3,6 +3,11 @@ var knownFeatures = { };
 var map = L.map('map').setView( [ 42.361207, -71.06506 ], 12 );
 map.attributionControl.setPrefix('');
 
+var north = -90;
+var south = 90;
+var east = -180;
+var west = 180;
+
 var myurl = "http:" + (window.location+"").split(":")[1];
 
 // add an OpenStreetMap tile layer
@@ -35,10 +40,20 @@ var mapfeature = function(feature){
       // line or polygon
       lyr.setStyle({ color: color });
         //.bindPopup( makeTable( feature.attributes ) );
+      var bounds = lyr.getBounds();
+      north = Math.max(north, bound.getNorth());
+      south = Math.min(south, bound.getSouth());
+      east = Math.max(east, bound.getEast());
+      west = Math.min(west, bound.getWest());
     }
     else{
       // change marker to circle
       lyr = new L.CircleMarker( lyr.getLatLng(), { color: color, opacity: 0.8, fillOpacity: 0.8 } );
+
+      north = Math.max(north, lyr.getLatLng().lat);
+      south = Math.min(south, lyr.getLatLng().lat);
+      east = Math.max(east, lyr.getLatLng().lng);
+      west = Math.min(west, lyr.getLatLng().lng);
         //.bindPopup( makeTable( feature.attributes ) );
     }
     knownFeatures[ feature.id ] = { geo: lyr };
@@ -91,6 +106,16 @@ var mapme = function(json){
   else{
     mapfeature( json.response.Feature );
   }
+  
+  if(north > south){
+    // fit all points
+    map.fitBounds([ [south, west], [north, east] ]);
+  }
+  else if(north == south){
+    // one point
+    map.panTo( new L.LatLng( north, east ) );
+  }
+  
   var s = document.createElement('script');
   s.src = myurl + ":" + port + "/geogit/diff?oldRefSpec=" + tree_root + "&output_format=json&all=true&callback=maptoattr";
   s.type = "text/javascript";
@@ -124,6 +149,10 @@ var logged = function(json){
 
   var commit_table = document.createElement('table');
   document.getElementById("commitlist").appendChild(commit_table);
+  
+  var tr = document.createElement('tr');
+  tr.innerHTML = '<td><small>From</small></td><td><small>To</small></td><td><small>Date</small></td>';
+  commit_table.appendChild(tr);
 
   for(var c=0;c<json.response.commit.length;c++){
     diffs.push( json.response.commit[c].id );
