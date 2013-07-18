@@ -9,6 +9,9 @@ var east = -180;
 var west = 180;
 
 var myurl = "http:" + (window.location+"").split(":")[1];
+if(myurl.toLowerCase().indexOf("geoginger.com") > -1){
+  myurl = "http://geoginger.com";
+}
 
 // add an OpenStreetMap tile layer
 L.tileLayer('http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg', {
