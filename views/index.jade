@@ -1,13 +1,26 @@
-div.hero-unit
-    h1 #{title}
-    p This is a very simple MVR starting point for Node.js Express.
-    
+link(type="text/css", rel="stylesheet", href="/stylesheets/bootstrap.min.css")
 
-div.content
-    div.row
-        div.span12
-            h2 A list of all of the Test Docs
-            ul.unstyled.indent
-                each example in examples
-                    li
-                        a(href="view/#{example._id}")  #{example.name} 
+div.container
+  .row
+    .span8
+      .hero-unit(style="padding-left:0")
+        h2 GeoGinger
+        ul
+          li Publish and track changes to your geodata
+          li Connects to ArcGIS Server and GitHub repos
+          li Backdate commits to make a timeline of changes to your map
+    .span4
+      .hero-unit
+        h4 Code and installation
+        ul.nav.nav-list
+          li
+            a(href="http://github.com/mapmeld/geogit-viz") GeoGinger
+          li
+            a(href="http://geogit.org/docs/quickstart.html") GeoGit
+
+  .row
+    .span3
+      h3 Try it out
+      p Select dates to show changes in data
+    
+    iframe.span9(src="/permits", height="350", frameborder="0", scrolling="no", marginheight="0", marginwidth="0")

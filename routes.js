@@ -6,7 +6,7 @@ module.exports = function(app){
   var xml2js = require('xml2js');
 
   app.get('/', function(req, res){
-    res.redirect('/permits');
+    res.render('index');
   });
 
   app.get('/permits', function(req, res){
