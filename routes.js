@@ -40,6 +40,7 @@ module.exports = function(app){
       sourceName: "Divvy Bikes"
     });
   });
+
   app.post('/githubpost', function(req, res){
     var commits = req.body.commits;
     var madeGeoUpdate = false;
@@ -73,7 +74,12 @@ module.exports = function(app){
       }
     }
     if(madeGeoUpdate){
-      // download and form OSM file
+      // run python updater
+      var sys = require('sys');
+      var exect = require('child_process').exec;
+      exec("(cd ~/bikes; python updatebikesfromgithub.py)", function(err, stdout, stderr){
+        return res.send('thanks!');
+      });
     }
   });
   
