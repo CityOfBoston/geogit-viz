@@ -6,21 +6,30 @@ div.container
       .hero-unit(style="padding-left:0")
         h2 GeoGinger
         ul
-          li Publish and track changes to your geodata
-          li Connects to ArcGIS Server and GitHub repos
+          li Map and track changes to your geodata
+          li Sync to ArcGIS Server and GitHub
           li Backdate commits to make a timeline of changes to your map
     .span4
       .hero-unit
         h4 Code and installation
         ul.nav.nav-list
           li
-            a(href="http://github.com/mapmeld/geogit-viz") GeoGinger
-          li
             a(href="http://geogit.org/docs/quickstart.html") GeoGit
+          li
+            a(href="http://github.com/mapmeld/geogit-viz") GeoGinger
 
   .row
     .span3
       h3 Try it out
-      p Select dates to show changes in data
+      p Select dates to show changes in data &rarr;
+      hr
+      h3 More
+      ul
+        li
+          a(href="/projects") Boston Dev Projects
+        li
+          a(href="/gitimport") Ben GitHub Import
+        li
+          a(href="/permits") Boston Permits
     
-    iframe.span9(src="/permits", height="350", frameborder="0", scrolling="no", marginheight="0", marginwidth="0")
+    iframe.span9(src="/permits?label=dateonly", height="350", frameborder="0", scrolling="no", marginheight="0", marginwidth="0")

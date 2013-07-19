@@ -12,6 +12,9 @@ var myurl = "http:" + (window.location+"").split(":")[1];
 if(myurl.toLowerCase().indexOf("geoginger.com") > -1){
   myurl = "http://geoginger.com";
 }
+if(myurl.toLowerCase().indexOf("162.209.56.237") > -1){
+  myurl = "http://162.209.56.237";
+}
 
 // add an OpenStreetMap tile layer
 L.tileLayer('http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg', {
@@ -81,6 +84,9 @@ var mapfeature = function(feature){
     $.getJSON("/featuredetails?port=" + port + "&url=" + encodeURIComponent(myurl) + "&path=" + encodeURIComponent(feature.newPath || feature.path) + "&gitid=" + fetchid, function(data){
       var table = '<table border="1">';
       for(key in data.attributes){
+        if(data.attributes[key] == "0"){
+          continue;
+        }
         var keyfix = key.split('^@^H^A');
         keyfix = keyfix[ keyfix.length - 1 ];
         if(keyfix.indexOf("DTTM") > -1){
@@ -163,6 +169,10 @@ var logged = function(json){
     var tr = document.createElement("tr");
     tr.className = "commit";
     var mydate = (new Date(json.response.commit[c].committer.timestamp)).toUTCString();
+    if((window.location + "").indexOf("label=dateonly") > -1){
+      mydate = (new Date(json.response.commit[c].committer.timestamp)).toDateString();
+      commit_table.style.fontSize = "8pt";
+    }
     var fromRadio = '<input id="from' + c + '" name="from" type="radio" onchange="setFrom(' + c + ')"/>';
     if(c == json.response.commit.length-1){
       fromRadio = '<input id="from' + c + '" name="from" type="radio" checked="true" onchange="setFrom(' + c + ')"/>'

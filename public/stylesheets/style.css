@@ -36,3 +36,8 @@ small{
 td{
   padding-bottom: 10px;
 }
+
+.leaflet-popup-content{
+  max-height: 400px;
+  overflow-y: scroll;
+}

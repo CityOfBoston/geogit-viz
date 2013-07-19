@@ -11,20 +11,70 @@ module.exports = function(app){
 
   app.get('/permits', function(req, res){
     res.render('map', {
-      port: 8080
+      port: 8080,
+      source: "http://boston.maps.arcgis.com/home/webmap/viewer.html?webmap=e36ac8b9b60542b4b834cba686fb8823",
+      sourceName: "City of Boston"
     });
   });
   
   app.get('/projects', function(req, res){
     res.render('map', {
-      port: 8081
+      port: 8081,
+      source: "http://gis.cityofboston.gov/Article80_dev/",
+      sourceName: "Boston Redevelopment Authority"
     });
   });
 
   app.get('/gitimport', function(req, res){
     res.render('map', {
-      port: 8082
+      port: 8082,
+      source: "https://github.com/benbalter/dc-wifi-social",
+      sourceName: "Ben Balter, GitHub"
     });
+  });
+
+  app.get('/divvy', function(req, res){
+    res.render('map', {
+      port: 8083,
+      source: "https://github.com/stevevance/divvy-statuses",
+      sourceName: "Divvy Bikes"
+    });
+  });
+  app.post('/githubpost', function(req, res){
+    var commits = req.body.commits;
+    var madeGeoUpdate = false;
+    for(var c=0;c<commits.length;c++){
+      for(var a=0;a<commits[c].added.length;a++){
+        if(commits[c].added[a].indexOf("json") > -1){
+          madeGeoUpdate = true;
+          break;
+        }
+      }
+      if(madeGeoUpdate){
+        break;
+      }
+      for(var a=0;a<commits[c].modified.length;a++){
+        if(commits[c].modified[a].indexOf("json") > -1){
+          madeGeoUpdate = true;
+          break;
+        }
+      }
+      if(madeGeoUpdate){
+        break;
+      }
+      for(var a=0;a<commits[c].modified.length;a++){
+        if(commits[c].modified[a].indexOf("json") > -1){
+          madeGeoUpdate = true;
+          break;
+        }
+      }
+      if(madeGeoUpdate){
+        break;
+      }
+    }
+    if(madeGeoUpdate){
+      // download and form OSM file
+    }
   });
   
   app.get('/featuredetails', function(req, res){
