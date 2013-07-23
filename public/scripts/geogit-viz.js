@@ -66,28 +66,31 @@ var mapfeature = function(feature){
     map.addLayer(lyr);
   }
   else{
-//    if(typeof knownFeatures[ feature.newPath || feature.path || feature ] != "undefined"){
-
-      if( feature.newObjectId == "0000000000000000000000000000000000000000"){
-        // removed
-        knownFeatures[ feature.newPath || feature.path || feature ].gitid = feature.oldObjectId;
-      }
-      else{
-        // added or modified
-        knownFeatures[ feature.newPath || feature.path || feature ].gitid = feature.newObjectId;
-      }
-//    }
+    if( feature.newObjectId == "0000000000000000000000000000000000000000"){
+      // removed
+      knownFeatures[ feature.newPath || feature.path || feature ].gitid = feature.oldObjectId;
+    }
+    else{
+      // added or modified
+      knownFeatures[ feature.newPath || feature.path || feature ].gitid = feature.newObjectId;
+    }
     var fetchid = feature.newObjectId;
     if(fetchid == "0000000000000000000000000000000000000000"){
       fetchid = feature.oldObjectId;
     }
     $.getJSON("/featuredetails?port=" + port + "&url=" + encodeURIComponent(myurl) + "&path=" + encodeURIComponent(feature.newPath || feature.path) + "&gitid=" + fetchid, function(data){
       var table = '<table border="1">';
+      if(typeof data.path != "undefined"){
+        var id = data.path.split("/")[1];
+        table += '<tr><td><strong>ID</strong></td><td>' + id + '</td></tr>';
+      }
       for(key in data.attributes){
-        if(data.attributes[key] == "0"){
+        if(data.attributes[key] == "0" || !data.attributes[key].length){
           continue;
         }
         var keyfix = key.split('^@^H^A');
+        keyfix = keyfix[ keyfix.length - 1 ];
+        keyfix = keyfix.split('�');
         keyfix = keyfix[ keyfix.length - 1 ];
         if(keyfix.indexOf("DTTM") > -1){
           // datetime print
