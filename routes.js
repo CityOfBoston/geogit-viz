@@ -198,5 +198,15 @@ module.exports = function(app){
       });
     });
   });
+
+  app.get('/:port/geogit/*', function(req, res){
+    var requestOptions = {
+      'uri': 'http://' + req.header('host') + ':' + req.params.port + "/" + req.originalUrl.split("/" + req.params.port + "/")[1]
+    };
+    request(requestOptions, function (err, response, b) {
+      res.send( b );
+    });
+
+  });
   
 };

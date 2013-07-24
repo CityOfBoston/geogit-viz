@@ -129,7 +129,12 @@ var mapme = function(json){
   }
   
   var s = document.createElement('script');
-  s.src = myurl + ":" + port + "/geogit/diff?oldRefSpec=" + tree_root + "&output_format=json&all=true&callback=maptoattr";
+  if(calledback){
+    s.src = myurl + ":" + port + "/geogit/diff?oldRefSpec=" + tree_root + "&output_format=json&all=true&callback=maptoattr";
+  }
+  else{
+    s.src = myurl + "/" + port + "/geogit/diff?oldRefSpec=" + tree_root + "&output_format=json&all=true&callback=maptoattr";
+  }
   s.type = "text/javascript";
   document.body.appendChild(s);
 };
@@ -153,7 +158,12 @@ var logged = function(json){
 
   // call for features
   var s = document.createElement('script');
-  s.src = myurl + ":" + port + "/geogit/diff?oldRefSpec=" + tree_root + "&output_format=json&all=true&showGeometryChanges=true&callback=mapme";
+  if(calledback){
+    s.src = myurl + ":" + port + "/geogit/diff?oldRefSpec=" + tree_root + "&output_format=json&all=true&showGeometryChanges=true&callback=mapme";
+  }
+  else{
+    s.src = myurl + "/" + port + "/geogit/diff?oldRefSpec=" + tree_root + "&output_format=json&all=true&showGeometryChanges=true&callback=mapme";
+  }
   s.type = "text/javascript";
   document.body.appendChild(s);
 
@@ -230,13 +240,31 @@ var updateDiff = function(){
     return;
   }
   var s = document.createElement('script');
-  s.src = myurl + ":" + port + "/geogit/diff?oldRefSpec=" + diffs[from] + "&newRefSpec=" + diffs[to] + "&output_format=json&all=true&showGeometryChanges=true&callback=mapme";
+  if(calledback){
+    s.src = myurl + ":" + port + "/geogit/diff?oldRefSpec=" + diffs[from] + "&newRefSpec=" + diffs[to] + "&output_format=json&all=true&showGeometryChanges=true&callback=mapme";
+  }
+  else{
+    s.src = myurl + "/" + port + "/geogit/diff?oldRefSpec=" + diffs[from] + "&newRefSpec=" + diffs[to] + "&output_format=json&all=true&showGeometryChanges=true&callback=mapme";
+  }
   s.type = "text/javascript";
   document.body.appendChild(s);
 }
 
 // call for commit log
+var calledback = false;
 var s = document.createElement('script');
 s.src = myurl + ":" + port + "/geogit/log?output_format=json&callback=logged";
 s.type = "text/javascript";
+s.onload = function(){
+  calledback = true;
+};
+s.onerror = function(){
+  // firewall - port is timing out
+  if(calledback){ return; }
+  var s = document.createElement('script');
+  s.src = myurl + "/" + port + "/geogit/log?output_format=json&callback=logged";
+  s.type = "text/javascript";
+  document.body.appendChild(s);
+};
 document.body.appendChild(s);
+setTimeout(s.onerror, 1200);
