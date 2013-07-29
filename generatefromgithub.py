@@ -46,7 +46,9 @@ while commitIndex >= 0:
       # geojson file
       gjURL = file["raw_url"]
       try:
-        gj = json.loads( urllib.urlopen( gjURL ).read() )
+        fileoutput = urllib.urlopen( gjURL ).read()
+        fileoutput = fileoutput.replace('\r','\\r').replace('\n','\\n')
+        gj = json.loads( fileoutput )
       except:
         print "not valid JSON!"
         continue
