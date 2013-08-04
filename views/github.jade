@@ -1,0 +1,45 @@
+link(type="text/css", rel="stylesheet", href="/stylesheets/bootstrap-unmod.css")
+style(type="text/css") .jsonapi, .geogitapi{ display: none; } .tech{ font-family: courier, serif; } .hero-unit{ padding: 30px; }
+
+div.container
+  .row
+    .span12
+      .hero-unit
+        h1 GeoGinger Sync
+        p Push to GitHub. Share on GeoGinger.
+
+  .row
+    .span4
+      .well
+        h3 What is GitHub?
+        p Open source code and open data are often stored and updated using a technology called Git.
+        p
+          span The most popular website for sharing work with Git today is&nbsp;
+          a(href="http://github.com") GitHub
+          span .
+        p If you post map data in GeoJSON or TopoJSON format, GitHub will create interactive maps of your data.
+      br
+      .well
+        h3 Why add GeoGinger?
+        p GeoGinger thinks in geo. Where GitHub sees line-by-line changes in files, GeoGinger's underlying technology GeoGit sees points added, attributes modified, and polygons removed.
+        p Outside developers can have their apps talk to GeoGinger to keep their data in sync with your posts.
+        p
+          span GeoGinger also provides&nbsp;
+          a(href="/api") APIs
+          span &nbsp;to download data in multiple formats and compare changes over time.
+        
+    .span8
+      h3 Sync GitHub and GeoGinger
+      p GeoGinger checks your GitHub daily for new changes to your GeoJSON files.
+      p When a GeoJSON file is updated, GeoGinger gives those commits the same time and message as your commit to GitHub. Everything matches up!
+      p It's also possible to sync to custom JSON and XML formats.
+      p There are currently two examples:
+      ul
+        li
+          a(href="/divvy") Divvy Bikes - Chicago
+        li
+          a(href="/gitimport") WiFi Hotspots - DC
+      
+      h3 Use web hooks to update automatically
+      p Under Development.
+      p Adding a web hook notifies GeoGinger when you push to GitHub. GeoGinger will then read in new changes and apply them to the GeoGinger repo.

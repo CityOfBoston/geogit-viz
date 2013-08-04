@@ -12,6 +12,10 @@ module.exports = function(app){
   app.get('/api', function(req, res){
     res.render('api');
   });
+  
+  app.get('/github', function(req, res){
+    res.render('github');
+  });
 
   app.get('/permits', function(req, res){
     res.render('map', {
