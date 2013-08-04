@@ -9,6 +9,10 @@ module.exports = function(app){
     res.render('index');
   });
 
+  app.get('/api', function(req, res){
+    res.render('api');
+  });
+
   app.get('/permits', function(req, res){
     res.render('map', {
       port: 8080,

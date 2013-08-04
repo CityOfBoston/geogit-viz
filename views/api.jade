@@ -1,0 +1,207 @@
+link(type="text/css", rel="stylesheet", href="/stylesheets/bootstrap-unmod.css")
+style(type="text/css") .jsonapi, .geogitapi{ display: none; } .tech{ font-family: courier, serif; } .hero-unit{ padding: 30px; }
+
+div.container
+  .row
+    .span12
+      .hero-unit
+        h1 GeoGinger APIs
+        p Download, compare, commit. Three ways to access your data.
+
+  .row
+    .span12
+      ul.nav.nav-tabs#apiselect
+        li.disabled
+          a(href="#") Select an API:
+        li#exportapi.active
+          a(href="#") Download
+        li#jsonapi
+          a(href="#") Compare
+        li#geogitapi
+          a(href="#") Commit
+
+  .row
+    .span4
+      .well
+        .exportapi
+          h4 Download API
+          p Get today's snapshot of data
+          h4 Table of Contents
+          ul
+            li
+              a(href="#shapefiles") Shapefiles
+            li
+              a(href="#geojson") GeoJSON
+            li
+              a(href="#osmxml") OSM XML
+        .jsonapi
+          h4 Compare API
+          p Describe changes in JSON or XML
+          h4 Table of Contents
+          ul
+            li
+              a(href="#parameters") Parameters
+            li
+              a(href="#log") Commit Log
+            li
+              a(href="#diff") Diff
+            li
+              a(href="#geodiff") Geometry Diff
+            li
+              a(href="#feature") Feature
+            
+        .geogitapi
+          h4 Commit API
+          p Use geogit on the command line
+          h4 Table of Contents
+          ul
+            li
+              a(href="#install") Install
+            li
+              a(href="#clone") Clone
+            li
+              a(href="#pull") Pull
+            li
+              a(href="#push") Push
+    .span8
+      .exportapi
+        p GeoGinger's Download API offers a complete dataset for download in multiple formats.
+        p These files are updated daily.
+        p Available formats:
+        ul
+          li
+            a(name="shapefiles")
+            h4 Shapefiles
+            p An export tool from OpenGeo creates a zipped shapefile. Shapefiles are an Esri format which can be opened in most GIS desktop applications.
+            p You can download a .zip with four files (.shp, .dfb, .dbx, .shx) which must stay together for the Shapefile to be read.
+            p If you are using ArcGIS or QGIS, you may want to use this format.
+            p
+              a(href="https://en.wikipedia.org/wiki/Shapefile") More about Shapefiles
+          li
+            a(name="geojson")
+            h4 GeoJSON
+            p A custom GeoGinger / gdal script exports the layer in GeoJSON format. GeoJSON is a standard formatting of JSON that is supported by many web mapping libraries and a few desktop applications.
+            p GeoJSON files are automatically rendered as maps in GitHub repos.
+            p
+              a(href="http://geojson.org/geojson-spec.html") GeoJSON Reference
+            
+          li
+            a(name="osmxml")
+            h4 OSM XML
+            p An export tool from OpenGeo exports the layer in OSM XML. OSM is an XML schema used by OpenStreetMap's API (0.6) to express nodes (points), ways (polylines and polygons), and relationships (complex polygons, multipolygons, etc).
+            p OSM files are typically used with OpenStreetMap and map editing tools.
+            p
+              a(href="http://wiki.openstreetmap.org/wiki/OSM_XML") OSM XML Reference
+            
+      .jsonapi
+        p The Compare API will list any geodata added, modified, or removed between two dates, two commits, or a past commit and the present.
+        p Data is updated daily.
+
+        hr
+
+        a(name="parameters")
+        h4 Parameters
+        strong Important parameters to know:
+        ul
+          li
+            span GeoGit's API uses XML by default. Add&nbsp;
+            span.tech output_format=json
+            span &nbsp;to return JSON format.
+          li
+            span JSONP is also supported. Add&nbsp;
+            span.tech callback=_____
+            span &nbsp;to call a function with the returned JSON.
+          li
+            span Up to 30 results are returned by default. Add&nbsp;
+            span.tech show=3000
+            span &nbsp;to maximize the number of results returned.
+          li
+            span To return geometry of affected points, lines, and shapes, add&nbsp;
+            span.tech showGeometryChanges=true
+            span &nbsp;&nbsp;In practice this leaves out some ID information which was returned by the API when this parameter is set to false or left out. The display map calls the API twice - once with and once without this parameter.
+        
+        hr
+        
+        a(name="log")
+        h4 Commit Log
+        p Retrieve a list of changes
+        p.tech geoginger.com/REPO_ID/geogit/log
+        h5 Sample XML
+        p.well.tech &lt;?xml version="1.0" ?&gt;&lt;response&gt;&lt;success&gt;true&lt;/success&gt;&lt;commit&gt;&lt;id&gt;9a1a46cbd89926146368223d173d022ea872ed3d&lt;/id&gt;&lt;tree&gt;8a8f30431c101bbba83a912b011c1b6956a87391&lt;/tree&gt;&lt;parents&gt;&lt;id&gt;5b9fef8db49c5c263cd17438c881fd3b8708c4dc&lt;/id&gt;&lt;/parents&gt;&lt;author&gt;&lt;name&gt;Nick Doiron&lt;/name&gt;&lt;email&gt;nick.doiron@cityofboston.gov&lt;/email&gt;&lt;timestamp&gt;1375157310000&lt;/timestamp&gt;&lt;timeZoneOffset&gt;0&lt;/timeZoneOffset&gt;&lt;/author&gt;&lt;committer&gt;&lt;name&gt;Nick Doiron&lt;/name&gt;&lt;email&gt;nick.doiron@cityofboston.gov&lt;/email&gt;&lt;timestamp&gt;1375157310000&lt;/timestamp&gt;&lt;timeZoneOffset&gt;0&lt;/timeZoneOffset&gt;&lt;/committer&gt;&lt;message&gt;&lt;![CDATA[Updated to 2013-07-29 11:07:01 PM]]&gt;&lt;/message&gt;&lt;/commit&gt;&lt;commit&gt;&lt;id&gt;5b9fef8db49c5c263cd17438c881fd3b8708c4dc&lt;/id&gt;&lt;tree&gt;f4af32c41203b333a60e41957bac4592a411e9d1&lt;/tree&gt;&lt;parents&gt;&lt;id&gt;1d5a56b3b629432234c22208fed0adc36ac0b216&lt;/id&gt;&lt;/parents&gt;&lt;author&gt;&lt;name&gt;Nick Doiron&lt;/name&gt;&lt;email&gt;nick.doiron@cityofboston.gov&lt;/email&gt;&lt;timestamp&gt;1375070122000&lt;/timestamp&gt;&lt;timeZoneOffset&gt;0&lt;/timeZoneOffset&gt;&lt;/author&gt;&lt;committer&gt;&lt;name&gt;Nick Doiron&lt;/name&gt;&lt;email&gt;nick.doiron@cityofboston.gov&lt;/email&gt;&lt;timestamp&gt;1375070122000&lt;/timestamp&gt;&lt;timeZoneOffset&gt;0&lt;/timeZoneOffset&gt;&lt;/committer&gt;&lt;message&gt;&lt;![CDATA[Updated to 2013-07-28 10:54:01 PM]]&gt;&lt;/message&gt;&lt;/commit&gt;&lt;/response&gt;
+        h5 Sample JSON
+        p.well.tech {"response":{"success":true, "commit":[{"id":"9a1a46cbd89926146368223d173d022ea872ed3d", "tree":"8a8f30431c101bbba83a912b011c1b6956a87391", "parents":{"id":"5b9fef8db49c5c263cd17438c881fd3b8708c4dc"}, "author":{"name":"Nick Doiron", "email":"nick.doiron@cityofboston.gov", "timestamp":1375157310000, "timeZoneOffset":0}, "committer":{"name":"Nick Doiron", "email":"nick.doiron@cityofboston.gov", "timestamp":1375157310000, "timeZoneOffset":0}, "message":"Updated to 2013-07-29 11:07:01 PM"}]}}
+        
+        hr
+        
+        a(name="diff")
+        h4 Diff
+        p Compare a past commit to the present state
+        p.tech geoginger.com/REPO_ID/geogit/diff?oldRefSpec=OLD_COMMIT_ID
+        p Or, compare two past commits
+        p.tech geoginger.com/REPO_ID/geogit/diff?oldRefSpec=OLDER_COMMIT_ID&newRefSpec=NEWER_COMMIT_ID
+        
+        h5 Sample XML
+        p.well.tech &lt;response&gt;&lt;success&gt;true&lt;/success&gt;&lt;diff&gt;&lt;changeType&gt;MODIFIED&lt;/changeType&gt;&lt;newPath&gt;node/54&lt;/newPath&gt;&lt;newObjectId&gt;89378aa6b773a7a2c65e843a4d86bbdec217f99a&lt;/newObjectId&gt;&lt;path&gt;node/54&lt;/path&gt;&lt;oldObjectId&gt;ee5edb1cf42c451a96f824355b7dad92a7683b12&lt;/oldObjectId&gt;&lt;/diff&gt;&lt;/response&gt;
+        h5 Sample JSON
+        p.well.tech {"response": {"success": true,"diff": [{"changeType": "MODIFIED","newPath": "node/54","newObjectId": "89378aa6b773a7a2c65e843a4d86bbdec217f99a","path": "node/54","oldObjectId": "ee5edb1cf42c451a96f824355b7dad92a7683b12"}], "nextPage": true } }
+        
+        a(name="geodiff")
+        h4 Geometry Diff
+        p Compare a past commit to the present state
+        p.tech geoginger.com/REPO_ID/geogit/diff?oldRefSpec=OLD_COMMIT_ID&showGeometryChanges=true
+        p Or, compare two past commits
+        p.tech geoginger.com/REPO_ID/geogit/diff?oldRefSpec=OLDER_COMMIT_ID&newRefSpec=NEWER_COMMIT_ID&showGeometryChanges=true
+        
+        h5 Sample XML
+        p.well.tech &lt;response&gt;&lt;success&gt;true&lt;/success&gt;&lt;Feature&gt;&lt;change&gt;MODIFIED&lt;/change&gt;&lt;id&gt;node/54&lt;/id&gt;&lt;geometry&gt;POINT (-87.6540612729 41.896362458)&lt;/geometry&gt;&lt;crs&gt;EPSG:4326&lt;/crs&gt;&lt;/Feature&gt;&lt;/response&gt;
+        h5 Sample JSON
+        p.well.tech { "response": { "success": true, "Feature": [ { "change": "MODIFIED", "id": "node/54", "geometry": "POINT (-87.6540612729 41.896362458)", "crs": "EPSG:4326" }]}}
+         
+        a(name="feature")
+        h4 Feature
+        p Experimental API from GeoGinger to return the latest JSON attributes of an object
+        
+        p.tech /featuredetails?port=REPO_ID&url=http%3A%2F%2Fgeoginger.com&path=NODE_ID&gitid=GIT_ID
+        h5 Sample JSON
+        p.well.tech { "gitid": "34ac607c0766a9aac6cff8f1e8bcd03b9ecebdab", "path": "node/58", "attributes": { "availableDocks": "6", "totalDocks": "15", "city": "", "altitude": "", "stAddress2": "", "lastCommunicationTime": "None", "postalCode": "", "statusValue": "In Service", "testStation": "False", "stAddress1": "Ashland Ave & Armitage Ave", "stationName": "Ashland Ave & Armitage Ave", "landMark": "025", "statusKey": "1", "availableBikes": "9", "location": "1639 W. Armitage Ave." } }
+            
+      .geogitapi
+        p GeoGit is also a command line utility similar to git. Once you have geogit installed, you can clone, pull, and push changes between your local repo and the GeoGinger server.
+        p GeoGit is not compatible with Git or GitHub, so you will be unable to push commits from one into the other. You might want to add the .geogit folder to your .gitignore file.
+        p
+          span You&nbsp;
+          em can
+          span &nbsp;sync changes with a GitHub repo - learn more at&nbsp;
+          a(href="http://geoginger.com/github") GeoGinger.com/github
+          span .
+        
+        a(name="install")
+        h4 Install
+        p
+          span Download OpenGeo's latest release of GeoGit from&nbsp;
+          a(href="http://geogit.org") GeoGit.org
+          span , and follow their installation instructions.
+        p
+          span To maximize your use of GeoGit, complete the&nbsp;
+          a(href="http://geogit.org/docs/quickstart.html") GeoGit Quickstart
+          span &nbsp;to practice creating and modifying GeoGit repos on the command line.
+        
+        a(name="clone")
+        h4 Clone
+        p Cloning a GeoGit repo makes a copy on your computer, with memory of past changes. This makes it possible to download future changes (using geogit pull) and upload changes (using geogit push) instead of re-downloading the entire file.
+        p Once you know your REPO_ID, and the path from the top level directory to your local folder, run this on your command line:
+        p.tech geogit clone http://geoginger.com:REPO_ID/geogit/ /path/from/top-level-directory/to/here/
+        
+        a(name="pull")
+        h4 Pull
+        p Whenever you want to sync the GeoGit repo on your machine to the content on GeoGinger, use the pull command.
+        p If you originally used geogit clone to create your repo, you want to run
+        p.tech geogit pull origin
+        p If you added GeoGinger as a remote repo ( named geoginger ) then run
+        p.tech geogit pull geoginger
+        
+        a(name="push")
+        h4 Push
+        p Push is currently enabled for all repos on GeoGinger. In the future it will be shut off, then selectively re-enabled.
+
+script(type="text/javascript", src="/scripts/api.js")
