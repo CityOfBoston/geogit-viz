@@ -83,12 +83,53 @@ module.exports = function(app){
     }
     if(madeGeoUpdate){
       // run python updater
-      var sys = require('sys');
-      var exect = require('child_process').exec;
+      var exec = require('child_process').exec;
       exec("(cd ~/bikes; python updatebikesfromgithub.py)", function(err, stdout, stderr){
         return res.send('thanks!');
       });
     }
+  });
+
+  app.get('/fresh', function(req, res){
+    var exec = require('child_process').exec;
+    exec("ps aux", function(err, stdout, stderr){
+      res.write('found task list');
+      var tasks = stdout.split('\n');
+      var server_tasks = [ ];
+      for(var t=0;t<tasks.length;t++){
+        if(tasks[t].indexOf("jetty:run") > -1){
+          // this is a server task
+          var tasknum = tasks[t].split("root")[1];
+          while(tasknum[0] == " "){
+            tasknum = tasknum.substring(1);
+          }
+          for(var c=0;c<tasknum.length;c++){
+            if(tasknum[c] == " "){
+              tasknum = tasknum.substring(0, c);
+              break;
+            }
+          }
+          server_tasks.push( tasknum );
+        }
+      }
+      // stop all GeoGit servers
+      exec("kill -9 " + server_tasks.join(" "), function(err, stdout, stderr){
+        res.write('stopped servers');
+        // update all layers
+        exec("(cd /root/bikes; python update*.py)", function(err, stdout, stderr){
+          res.write('updated bikes');
+          exec("(cd /root/permits; python update*.py)", function(err, stdout, stderr){
+            res.write('updated permits');
+            exec("(cd /root/projects; python update*.py)", function(err, stdout, stderr){
+              res.write('updated projects');
+              exec("(cd /root/GeoGit/src/parent; python runall.py)", function(err, stdout, stderr){
+                res.end('restarted!');
+              });
+            });
+          });
+        });
+      });
+    });
   });
   
   app.get('/featuredetails', function(req, res){
