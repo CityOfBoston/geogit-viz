@@ -163,6 +163,9 @@ module.exports = function(app){
       'uri': 'http://140.241.251.224/BRAWebServices/Article80.asmx/GetProjects'
     };
     request(requestOptions, function (err, response, body) {
+      if(err || !body || !body.length){
+        return res.send('fail');
+      }
       // parse XML
       xml2js.parseString(body, function(err, result){
         if(err){
@@ -213,6 +216,9 @@ module.exports = function(app){
       'uri': 'http://maps.cityofboston.gov/ArcGIS/rest/services/Permitting/Permits/MapServer/0/query?text=&geometry=&geometryType=esriGeometryPoint&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&objectIds=&where=1%3D1&time=&returnCountOnly=false&returnIdsOnly=false&returnGeometry=true&maxAllowableOffset=&outSR=4326&outFields=*&f=pjson'
     };
     request(requestOptions, function (err, response, b) {
+      if(err || !b || !b.length){
+        return res.send('fail');
+      }
       var esriJSON = JSON.parse( b );
       var points = esriJSON.features;
       var osmdoc = new libxml.Document().node('osm').attr({
