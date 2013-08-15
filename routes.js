@@ -93,12 +93,14 @@ module.exports = function(app){
   app.get('/fresh', function(req, res){
     var exec = require('child_process').exec;
     exec("ps aux", function(err, stdout, stderr){
-      res.write('found task list');
       var tasks = stdout.split('\n');
       var server_tasks = [ ];
+      //return res.send( tasks );
+      res.write('found task list');
       for(var t=0;t<tasks.length;t++){
         if(tasks[t].indexOf("jetty:run") > -1){
           // this is a server task
+          var port = tasks[t].split('port=')[1];
           var tasknum = tasks[t].split("root")[1];
           while(tasknum[0] == " "){
             tasknum = tasknum.substring(1);
@@ -113,7 +115,11 @@ module.exports = function(app){
         }
       }
       // stop all GeoGit servers
-      exec("kill -9 " + server_tasks.join(" "), function(err, stdout, stderr){
+      var phrase = "kill -9 ";
+      if(!server_tasks.length){
+        phrase = "ls";
+      }
+      exec(phrase + server_tasks.join(" "), function(err, stdout, stderr){
         res.write('stopped servers');
         // update all layers
         exec("(cd /root/bikes; python update*.py)", function(err, stdout, stderr){
