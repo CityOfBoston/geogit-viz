@@ -1,5 +1,5 @@
 # GenerateFromGitHub.py
-import urllib, json, os, hashlib, time
+import urllib, json, os, time
 from datetime import datetime
 import xml.etree.ElementTree as ET
 
@@ -96,7 +96,7 @@ while commitIndex >= 0:
               nodeids = [ ]
               for pt in feature["geometry"]["coordinates"]:
                 node = ET.SubElement(osm, "node")
-                nodeid = id + "-" + hashlib.md5( str(lat) + "," + str(lng) ).hexdigest()
+                nodeid = "10" + id + str(len(nodeids))
                 nodeids.append( nodeid )
                 node.set("id", nodeid )
                 node.set("lat", str(feature["geometry"]["coordinates"][ptIndex][1]))
@@ -129,7 +129,7 @@ while commitIndex >= 0:
                 ptIndex = 0
                 for pt in ring:
                   node = ET.SubElement(osm, "node")
-                  nodeid = id + "-" + hashlib.md5( str(lat) + "," + str(lng) ).hexdigest()
+                  nodeid = "10" + id + str(len(nodeids))
                   nodeids.append( nodeid )
                   node.set("id", nodeid )
                   node.set("lat", str(ring[ptIndex][1]))
@@ -141,9 +141,10 @@ while commitIndex >= 0:
                   node.set("changeset", "1")
                   node.set("timestamp", "2008-09-21T00:00:00Z")
                   ptIndex = ptIndex + 1
+                nodeids.append( nodeids[0] )
                 
                 way = ET.SubElement(osm, "way")
-                wayid = id + "-" + hashlib.md5( ','.join( nodeids ) ).hexdigest()
+                wayid = "20" + id + str(len(wayids))
                 wayids.append( wayid )
                 way.set("id", wayid )
                 way.set("user", "mapmeld")
