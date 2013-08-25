@@ -47,10 +47,10 @@ var mapfeature = function(feature){
       lyr.setStyle({ color: color });
         //.bindPopup( makeTable( feature.attributes ) );
       var bounds = lyr.getBounds();
-      north = Math.max(north, bound.getNorth());
-      south = Math.min(south, bound.getSouth());
-      east = Math.max(east, bound.getEast());
-      west = Math.min(west, bound.getWest());
+      north = Math.max(north, bounds.getNorthEast().lat);
+      south = Math.min(south, bounds.getSouthWest().lat);
+      east = Math.max(east, bounds.getNorthEast().lng);
+      west = Math.min(west, bounds.getSouthWest().lng);
     }
     else{
       // change marker to circle
