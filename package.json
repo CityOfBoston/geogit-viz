@@ -8,6 +8,8 @@
     , "request": "2.21.X"
     , "libxmljs": "0.8.X"
     , "xml2js": "0.2.X"
+    , "mongodb": ">=0.9.6-7"
+    , "mongoose": ">= 2.5.10"
   },
   "engines": {
     "node": "0.8.x",

@@ -1,4 +1,4 @@
-module.exports = function(app){
+module.exports = function(app, models){
 
   var request = require('request');
   var libxml = require('libxmljs');
@@ -7,6 +7,15 @@ module.exports = function(app){
 
   app.get('/', function(req, res){
     res.render('index');
+  });
+
+  app.get('/repos', function(req, res){
+    models.repos.find({}).exec(function(err, repos){
+      if(err){
+        return res.send( err );
+      }
+      res.json( repos );
+    });
   });
 
   app.get('/api', function(req, res){
@@ -219,7 +228,13 @@ module.exports = function(app){
       if(err || !b || !b.length){
         return res.send('fail');
       }
-      var esriJSON = JSON.parse( b );
+      var esriJSON;
+      try{
+        esriJSON = JSON.parse( b );
+      }
+      catch(e){
+        return res.send('fail');
+      }
       var points = esriJSON.features;
       var osmdoc = new libxml.Document().node('osm').attr({
         version: "0.6",
