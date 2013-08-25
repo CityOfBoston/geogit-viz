@@ -17,6 +17,50 @@ module.exports = function(app, models){
       res.json( repos );
     });
   });
+  
+  app.get('/addrepo', function(req, res){
+    res.render('addrepo');
+  });
+  app.post('/addrepo', function(req, res){
+    // currently allowing only one per user
+    var user = req.body.user.toLowerCase();
+    var project = req.body.project.toLowerCase();
+    var acceptChars = [ "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "_", "-" ];
+    for(var c = 0; c < user.length; c++){
+      if( acceptChars.indexOf(user[c]) == -1 ){
+        user = user.substring(0, c);
+      }
+    }
+    for(var c = 0; c < project.length; c++){
+      if( acceptChars.indexOf(project[c]) == -1 ){
+        project = project.substring(0, c);
+      }
+    }
+    
+    models.repos.findOne({ user: user }).exec(function(err, repo){
+      if(err){
+        return res.json(err);
+      }
+      if(repo){
+        return res.json({ error: "GitHub user already has a repo" });
+      }
+      var exec = require('child_process').exec;
+      exec("( mkdir ../github/" + user + " ; mkdir ../github/" + user + "/" + project + "; cp *fromgithub.py ../github/" + user + "/" + project + "/ ; cd ../github/" + user + "/" + project + "/ ; python generatefromgithub.py ; )", function(err, stdout, stderr){        
+        var count = Math.floor(Math.random() * 5000);
+        // what is the real argument for port #?
+        exec("( cd ../GeoGit/src/parent ; mvn jetty:run -pl ../web/app -f pom.xml -Dorg.geogit.web.repository=/root/github/" + user + "/" + project + "/ -Dorg.geogit.web.port=" + count  + " )", function(err, stdout, stderr){
+          var repo = new models.repos();
+          repo.user = user;
+          repo.project = project;
+          repo.src = "GitHub";
+          repo.port = 2000 + count;
+          repo.save(function(err){
+            res.json( err || { success: "added", port: (2000 + count) } );
+          });
+        });
+      });
+    });
+  });
 
   app.get('/api', function(req, res){
     res.render('api');
@@ -42,6 +86,49 @@ module.exports = function(app, models){
     });
   });
 
+  app.get('/git/:port', function(req, res){
+    res.render('map', {
+      port: req.params.port * 1,
+      source: "https://github.com",
+      sourceName: "GitHub"
+    });
+  });
+  app.get('/refresh/:port', function(req, res){
+    exec("ps aux", function(err, stdout, stderr){
+      var tasks = stdout.split('\n');
+      var targettask;
+      for(var t=0;t<tasks.length;t++){
+        if(tasks[t].indexOf("jetty:run") > -1){
+          // this is a server task
+          var port = tasks[t].split('port=')[1];
+          var tasknum = tasks[t].split("root")[1];
+          if(port == req.params.port){
+            targettask = tasknum;
+            break;
+          }
+        }
+      }
+      if(targettask){
+        models.repos.findOne({ port: req.params.port }).exec(function(err, repo){
+          if(err){
+            return res.json({ error: err });
+          }
+          var exec = require('child_process').exec;
+          exec("kill -9 " + targettask, function(err, stdout, stderr){
+            exec("(cd ../github/" + repo.user + "/" + repo.project + "/ ; python updatefromgithub.py)", function(err, stdout, stderr){
+              exec("(cd ../GeoGit/src/parent ; mvn jetty:run -pl ../web/app -f pom.xml -Dorg.geogit.web.repository=/root/github/" + repo.user + "/" + repo.project + "/ -Dorg.geogit.web.port=" + repo.port + " )", function(err, stdout, stderr){
+                return res.json({ success: "updated", port: repo.port });
+              });
+            });
+          });
+        });
+      }
+      else{
+        res.json({ error: 'no matching task' });
+      }
+    });
+  });
+
   app.get('/gitimport', function(req, res){
     res.render('map', {
       port: 8082,
@@ -56,47 +143,6 @@ module.exports = function(app, models){
       source: "https://github.com/stevevance/divvy-statuses",
       sourceName: "Divvy Bikes"
     });
-  });
-
-  app.post('/githubpost', function(req, res){
-    var commits = req.body.commits;
-    var madeGeoUpdate = false;
-    for(var c=0;c<commits.length;c++){
-      for(var a=0;a<commits[c].added.length;a++){
-        if(commits[c].added[a].indexOf("json") > -1){
-          madeGeoUpdate = true;
-          break;
-        }
-      }
-      if(madeGeoUpdate){
-        break;
-      }
-      for(var a=0;a<commits[c].modified.length;a++){
-        if(commits[c].modified[a].indexOf("json") > -1){
-          madeGeoUpdate = true;
-          break;
-        }
-      }
-      if(madeGeoUpdate){
-        break;
-      }
-      for(var a=0;a<commits[c].modified.length;a++){
-        if(commits[c].modified[a].indexOf("json") > -1){
-          madeGeoUpdate = true;
-          break;
-        }
-      }
-      if(madeGeoUpdate){
-        break;
-      }
-    }
-    if(madeGeoUpdate){
-      // run python updater
-      var exec = require('child_process').exec;
-      exec("(cd ~/bikes; python updatebikesfromgithub.py)", function(err, stdout, stderr){
-        return res.send('thanks!');
-      });
-    }
   });
 
   app.get('/fresh', function(req, res){

@@ -6,40 +6,57 @@ div.container
     .span12
       .hero-unit
         h1 GeoGinger Sync
-        p Push to GitHub. Share on GeoGinger.
+        p Push to GitHub. Map with GeoGinger.
 
   .row
     .span4
       .well
-        h3 What is GitHub?
-        p Open source code and open data are often stored and updated using a technology called Git.
-        p
-          span The most popular website for sharing work with Git today is&nbsp;
-          a(href="http://github.com") GitHub
-          span .
-        p If you post map data in GeoJSON or TopoJSON format, GitHub will create interactive maps of your data.
+        h3 Add a Repo
+        p BETA: one per user
+        form(action="/addrepo", method="POST")
+          label User
+          br
+          input#userinfo(type="text", name="user")
+          br
+          br
+          label Project
+          br
+          input#projectinfo(type="text", name="project")
+          br
+          //
+            a.btn.btn-primary(href="#", onclick="addRepo()") Add Repo
+          input(type="submit") Add Repo
+        script(type="text/javascript", src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js")
+        script(type="text/javascript", src="/scripts/githubtools.js")
+    
+    .span4
+      h3 What is GitHub?
+      p Open source code and open data are often stored and updated using Git.
+      p
+        span The most popular website for sharing work with Git today is&nbsp;
+        a(href="http://github.com") GitHub
+        span .
+        p When you share GeoJSON files on GitHub, the site will make interactive maps of your data.
       br
-      .well
-        h3 Why add GeoGinger?
-        p GeoGinger thinks in geo. Where GitHub sees line-by-line changes in files, GeoGinger's underlying technology GeoGit sees points added, attributes modified, and polygons removed.
-        p Outside developers can have their apps talk to GeoGinger to keep their data in sync with your posts.
-        p
-          span GeoGinger also provides&nbsp;
-          a(href="/api") APIs
-          span &nbsp;to download data in multiple formats and compare changes over time.
+      h3 Why add GeoGinger?
+      p GeoGinger thinks in geo. Where GitHub sees line-by-line changes in files, GeoGinger's underlying technology sees points added, attributes modified, and polygons removed.
+      p Outside developers can have their apps connect to GeoGinger to keep their data in sync.
+      p
+        span GeoGinger also provides&nbsp;
+        a(href="/api") APIs
+        span &nbsp;to download data in multiple formats and see changes over time.
         
-    .span8
-      h3 Sync GitHub and GeoGinger
-      p GeoGinger checks your GitHub daily for new changes to your GeoJSON files.
-      p When a GeoJSON file is updated, GeoGinger gives those commits the same time and message as your commit to GitHub. Everything matches up!
-      p It's also possible to sync to custom JSON and XML formats.
+    .span4
+      h3 Perfect Sync
+      p GeoGinger checks GitHub daily for changes to your GeoJSON files.
+      p Commits on GeoGinger have the same message and timestamp as your commit to GitHub. Everything matches up!
       p There are currently two examples:
       ul
         li
           a(href="/divvy") Divvy Bikes - Chicago
         li
           a(href="/gitimport") WiFi Hotspots - DC
-      
-      h3 Use web hooks to update automatically
-      p Under Development.
-      p Adding a web hook notifies GeoGinger when you push to GitHub. GeoGinger will then read in new changes and apply them to the GeoGinger repo.
+
+      h3 Update automatically
+      p Adding a web hook on GitHub notifies GeoGinger when you push an update. GeoGinger will then sync to match your GitHub.
+      p Directions are coming - but if you know what to do, just add http://geoginger.com/refresh/PORT

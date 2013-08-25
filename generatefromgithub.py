@@ -9,7 +9,9 @@ useOAuth = False
 #client_id = "x"
 #client_secret = "x"
 
-repo = "benbalter/dc-wifi-social"
+# get GitHub project path user/project
+path = os.path.abspath('').split('/')
+repo = path[len(path)-2] + "/" + path[len(path)-1]
 
 commitURL = "https://api.github.com/repos/" + repo + "/commits"
 if(useOAuth):
