@@ -48,7 +48,7 @@ module.exports = function(app, models){
       exec("( mkdir ../github/" + user + " ; mkdir ../github/" + user + "/" + project + "; cp *fromgithub.py ../github/" + user + "/" + project + "/ ; cd ../github/" + user + "/" + project + "/ ; python generatefromgithub.py ; )", function(err, stdout, stderr){        
         var count = Math.floor(Math.random() * 5000);
         // what is the real argument for port #?
-        exec("( cd ../GeoGit/src/parent ; mvn jetty:run -pl ../web/app -f pom.xml -Dorg.geogit.web.repository=/root/github/" + user + "/" + project + "/ -Dorg.geogit.web.port=" + count  + " )", function(err, stdout, stderr){
+        exec("( cd ../GeoGit/src/parent ; mvn jetty:run -pl ../web/app -f pom.xml -Dorg.geogit.web.repository=/root/github/" + user + "/" + project + "/ -Djetty.port=" + count  + " & )", function(err, stdout, stderr){
           var repo = new models.repos();
           repo.user = user;
           repo.project = project;
@@ -116,7 +116,7 @@ module.exports = function(app, models){
           var exec = require('child_process').exec;
           exec("kill -9 " + targettask, function(err, stdout, stderr){
             exec("(cd ../github/" + repo.user + "/" + repo.project + "/ ; python updatefromgithub.py)", function(err, stdout, stderr){
-              exec("(cd ../GeoGit/src/parent ; mvn jetty:run -pl ../web/app -f pom.xml -Dorg.geogit.web.repository=/root/github/" + repo.user + "/" + repo.project + "/ -Dorg.geogit.web.port=" + repo.port + " )", function(err, stdout, stderr){
+              exec("(cd ../GeoGit/src/parent ; mvn jetty:run -pl ../web/app -f pom.xml -Dorg.geogit.web.repository=/root/github/" + repo.user + "/" + repo.project + "/ -Djetty.port=" + repo.port + " )", function(err, stdout, stderr){
                 return res.json({ success: "updated", port: repo.port });
               });
             });
@@ -134,6 +134,14 @@ module.exports = function(app, models){
       port: 8082,
       source: "https://github.com/benbalter/dc-wifi-social",
       sourceName: "Ben Balter, GitHub"
+    });
+  });
+
+  app.get('/osm', function(req, res){
+    res.render('map', {
+      port: 8084,
+      source: 'OpenStreetMap',
+      sourceName: 'OpenStreetMap'
     });
   });
 
@@ -183,8 +191,12 @@ module.exports = function(app, models){
             res.write('updated permits');
             exec("(cd /root/projects; python update*.py)", function(err, stdout, stderr){
               res.write('updated projects');
-              exec("(cd /root/GeoGit/src/parent; python runall.py)", function(err, stdout, stderr){
-                res.end('restarted!');
+              exec("(cd /root/osm; python update*.py)", function(err, stdout, stderr){
+                res.write('updated osm');
+
+                exec("(cd /root/GeoGit/src/parent; python runall.py)", function(err, stdout, stderr){
+                  res.end('restarted!');
+                });
               });
             });
           });
