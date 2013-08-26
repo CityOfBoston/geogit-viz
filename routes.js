@@ -46,7 +46,7 @@ module.exports = function(app, models){
       exec("( mkdir ../github/" + user + " ; mkdir ../github/" + user + "/" + project + "; cp *fromgithub.py ../github/" + user + "/" + project + "/ )", function(err, stdout, stderr){        
         console.log("on port " + count);
 
-        exec("( cd ../github/" + user + "/" + project + "; python3 generatefromgithub.py & )", function(err, stdout, stderr){
+        exec("( cd ../github/" + user + "/" + project + "; python3 generatefromgithub.py )", function(err, stdout, stderr){
           console.log("ran generate script");
           res.redirect("/git/" + count);
           exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/github/" + user + "/" + project + " -Djetty.port=" + count + " &", function(err, stdout, stderr){
@@ -91,6 +91,29 @@ module.exports = function(app, models){
       source: "http://gis.cityofboston.gov/Article80_dev/",
       sourceName: "Boston Redevelopment Authority"
     });
+  });
+  
+  app.get('/start_repo_list', function(req, res){
+    models.repos.find({}).exec(function(err, repos){
+      if(err){
+        return res.send(err);
+      }
+      var runRepo = function(r){
+        if(!repos.length || r>=repos.length){
+          return res.send('done');
+        }
+        var repo = repos[r];
+        exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/github/" + repo.user + "/" + repo.project + " -Djetty.port=" + repo.port + " &", null);
+        setTimeout(function(){
+          runRepo(r+1);
+        }, 2000);
+      };
+      runRepo(0);
+    });
+  });
+  app.get('/clear_repo_list', function(req, res){
+    models.repos.find({}).remove();
+    res.send('done');
   });
 
   app.get('/git/:port', function(req, res){
