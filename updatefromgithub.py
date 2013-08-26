@@ -190,8 +190,8 @@ while commitIndex >= 0:
   if(foundGeoJSON == True):
     tree = ET.ElementTree(osm)
     tree.write('gjoutput.osm')
-    os.system('"geogit osm import gjoutput.osm"')
-    os.system('"geogit add"')
+    os.system('geogit osm import gjoutput.osm')
+    os.system('geogit add')
     message = 'GitHub commit ' + commits[ commitIndex ]["sha"]
     if( "message" in commits[ commitIndex ]["commit"] ):
       message = commits[ commitIndex ]["commit"]["message"].replace('"', '\'')
@@ -200,7 +200,7 @@ while commitIndex >= 0:
     if(timeprint.find('.') > -1):
       timeprint = timeprint[ 0 : timeprint.find('.') ]
     
-    os.system('\'geogit commit -m "' + message + '" -t ' + timeprint + '000\'')
+    os.system('geogit commit -m "' + message + '" -t ' + timeprint + '000')
   
   # load next one
   commitIndex = commitIndex - 1

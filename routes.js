@@ -46,11 +46,13 @@ module.exports = function(app, models){
       exec("( mkdir ../github/" + user + " ; mkdir ../github/" + user + "/" + project + "; cp *fromgithub.py ../github/" + user + "/" + project + "/ )", function(err, stdout, stderr){        
         console.log("on port " + count);
 
-        exec("( cd ../github/" + user + "/" + project + "; python3 generatefromgithub.py )", function(err, stdout, stderr){
+        exec("( cd ../github/" + user + "/" + project + "; python3 generatefromgithub.py & )", function(err, stdout, stderr){
           console.log("ran generate script");
           res.redirect("/git/" + count);
-
-          exec("cd ../GeoGit/src/parent; mvn jetty:run -pl ../web/app -f pom.xml -Dorg.geogit.web.repository=/root/github/" + user + "/" + project + " -Djetty.port=" + count  + " & ", function(err, stdout, stderr){
+          exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/github/" + user + "/" + project + " -Djetty.port=" + count + " &", function(err, stdout, stderr){
+            console.log(err);
+            console.log(stdout);
+            console.log(stderr);
             console.log("started a server");
             var repo = new models.repos();
             repo.user = user;
@@ -121,7 +123,7 @@ module.exports = function(app, models){
           var exec = require('child_process').exec;
           exec("kill -9 " + targettask, function(err, stdout, stderr){
             exec("(cd ../github/" + repo.user + "/" + repo.project + "/ ; python3 updatefromgithub.py)", function(err, stdout, stderr){
-              exec("cd ../GeoGit/src/parent ; mvn jetty:run -pl ../web/app -f pom.xml -Dorg.geogit.web.repository=/root/github/" + repo.user + "/" + repo.project + "/ -Djetty.port=" + repo.port + " &", function(err, stdout, stderr){
+              exec("(cd ../GeoGit/src/parent ; mvn jetty:run -pl ../web/app -f pom.xml -Dorg.geogit.web.repository=/root/github/" + repo.user + "/" + repo.project + " -Djetty.port=" + repo.port + ")", function(err, stdout, stderr){
                 return res.json({ success: "updated", port: repo.port });
               });
             });

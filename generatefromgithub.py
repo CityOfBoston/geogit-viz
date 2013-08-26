@@ -14,14 +14,14 @@ useOAuth = False
 path = os.path.abspath('').split('/')
 repo = path[len(path)-2] + "/" + path[len(path)-1]
 
+os.system('geogit init /root/github/' + repo)
+
 commitURL = "https://api.github.com/repos/" + repo + "/commits"
 if(useOAuth):
   commitURL = commitURL + "?client_id=" + client_id + "&client_secret=" + client_secret
 commits = json.loads( urllib.urlopen( commitURL ).readall().decode('utf-8') )
 
 commitIndex = len( commits ) - 1
-
-os.system('"geogit init"')
 
 while commitIndex >= 0:
 
@@ -185,8 +185,8 @@ while commitIndex >= 0:
   if(foundGeoJSON == True):
     tree = ET.ElementTree(osm)
     tree.write('gjoutput.osm')
-    os.system('"geogit osm import gjoutput.osm"')
-    os.system('"geogit add"')
+    os.system('geogit osm import gjoutput.osm')
+    os.system('geogit add')
     message = 'GitHub commit ' + commits[ commitIndex ]["sha"]
     if( "message" in commits[ commitIndex ]["commit"] ):
       message = commits[ commitIndex ]["commit"]["message"].replace('"', '\'')
@@ -195,7 +195,7 @@ while commitIndex >= 0:
     if(timeprint.find('.') > -1):
       timeprint = timeprint[ 0 : timeprint.find('.') ]
     
-    os.system('\'geogit commit -m "' + message + '" -t ' + timeprint + '000\'')
+    os.system('geogit commit -m "' + message + '" -t ' + timeprint + '000')
   
   # load next one
   commitIndex = commitIndex - 1
