@@ -13,7 +13,6 @@ client_secret = os.environ.get('GITHUBCLIENTSECRET')
 # get GitHub project path user/project
 path = os.path.abspath('').split('/')
 repo = path[len(path)-2] + "/" + path[len(path)-1]
-repo = repo[ : len(repo) - 3 ]
 
 os.system('geogit init')
 

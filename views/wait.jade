@@ -1,0 +1,12 @@
+h3 Loading...
+
+p This page will appear until your map is ready
+
+p
+  span Your map's url will be&nbsp
+  a(href="/git/#{port}") geoginger.com/git/#{port}
+  span .
+
+script(type="text/javascript", src="http://code.jquery.com/jquery-1.9.1.min.js")
+script(type="text/javascript") var port = "#{port}";
+script(type="text/javascript", src="waitbar.js")
