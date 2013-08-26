@@ -18,9 +18,6 @@ module.exports = function(app, models){
     });
   });
   
-  app.get('/addrepo', function(req, res){
-    res.render('addrepo');
-  });
   app.post('/addrepo', function(req, res){
     // currently allowing only one per user
     var user = req.body.user.toLowerCase();
@@ -41,21 +38,29 @@ module.exports = function(app, models){
       if(err){
         return res.json(err);
       }
-      if(repo){
+      if(repo && user != "mapmeld"){
         return res.json({ error: "GitHub user already has a repo" });
       }
+      var count = 2000 + Math.floor(Math.random() * 5000);
       var exec = require('child_process').exec;
-      exec("( mkdir ../github/" + user + " ; mkdir ../github/" + user + "/" + project + "; cp *fromgithub.py ../github/" + user + "/" + project + "/ ; cd ../github/" + user + "/" + project + "/ ; python generatefromgithub.py ; )", function(err, stdout, stderr){        
-        var count = Math.floor(Math.random() * 5000);
-        // what is the real argument for port #?
-        exec("( cd ../GeoGit/src/parent ; mvn jetty:run -pl ../web/app -f pom.xml -Dorg.geogit.web.repository=/root/github/" + user + "/" + project + "/ -Djetty.port=" + count  + " & )", function(err, stdout, stderr){
-          var repo = new models.repos();
-          repo.user = user;
-          repo.project = project;
-          repo.src = "GitHub";
-          repo.port = 2000 + count;
-          repo.save(function(err){
-            res.json( err || { success: "added", port: (2000 + count) } );
+      exec("( mkdir ../github/" + user + " ; mkdir ../github/" + user + "/" + project + "; cp *fromgithub.py ../github/" + user + "/" + project + "/ )", function(err, stdout, stderr){        
+        console.log("on port " + count);
+
+        exec("( cd ../github/" + user + "/" + project + "; python3 generatefromgithub.py )", function(err, stdout, stderr){
+          console.log("ran generate script");
+          res.redirect("/git/" + count);
+
+          exec("cd ../GeoGit/src/parent; mvn jetty:run -pl ../web/app -f pom.xml -Dorg.geogit.web.repository=/root/github/" + user + "/" + project + " -Djetty.port=" + count  + " & ", function(err, stdout, stderr){
+            console.log("started a server");
+            var repo = new models.repos();
+            repo.user = user;
+            repo.project = project;
+            repo.src = "GitHub";
+            repo.port = count;
+            repo.save(function(err){
+              console.log(" saved ");
+              //return res.json( { success: "added", port: (2000 + count) } );
+            });
           });
         });
       });
@@ -115,8 +120,8 @@ module.exports = function(app, models){
           }
           var exec = require('child_process').exec;
           exec("kill -9 " + targettask, function(err, stdout, stderr){
-            exec("(cd ../github/" + repo.user + "/" + repo.project + "/ ; python updatefromgithub.py)", function(err, stdout, stderr){
-              exec("(cd ../GeoGit/src/parent ; mvn jetty:run -pl ../web/app -f pom.xml -Dorg.geogit.web.repository=/root/github/" + repo.user + "/" + repo.project + "/ -Djetty.port=" + repo.port + " )", function(err, stdout, stderr){
+            exec("(cd ../github/" + repo.user + "/" + repo.project + "/ ; python3 updatefromgithub.py)", function(err, stdout, stderr){
+              exec("cd ../GeoGit/src/parent ; mvn jetty:run -pl ../web/app -f pom.xml -Dorg.geogit.web.repository=/root/github/" + repo.user + "/" + repo.project + "/ -Djetty.port=" + repo.port + " &", function(err, stdout, stderr){
                 return res.json({ success: "updated", port: repo.port });
               });
             });
@@ -191,12 +196,8 @@ module.exports = function(app, models){
             res.write('updated permits');
             exec("(cd /root/projects; python update*.py)", function(err, stdout, stderr){
               res.write('updated projects');
-              exec("(cd /root/osm; python update*.py)", function(err, stdout, stderr){
-                res.write('updated osm');
-
-                exec("(cd /root/GeoGit/src/parent; python runall.py)", function(err, stdout, stderr){
-                  res.end('restarted!');
-                });
+              exec("(cd /root/GeoGit/src/parent; python runall.py)", function(err, stdout, stderr){
+                res.end('restarted!');
               });
             });
           });

@@ -1,5 +1,6 @@
 # UpdateFromGitHub.py
-import urllib, json, os, time
+import json, os, time
+from urllib import request as urllib
 from datetime import datetime
 import xml.etree.ElementTree as ET
 
@@ -15,7 +16,7 @@ repo = path[len(path)-2] + "/" + path[len(path)-1]
 commitURL = "https://api.github.com/repos/" + repo + "/commits"
 if(useOAuth):
   commitURL = commitURL + "?client_id=" + client_id + "&client_secret=" + client_secret
-commits = json.loads( urllib.urlopen( commitURL ).read() )
+commits = json.loads( urllib.urlopen( commitURL ).readall().decode('utf-8') )
 
 commitIndex = len( commits ) - 1
 
@@ -27,18 +28,18 @@ while commitIndex >= 0:
   filedTime = os.path.getmtime( 'gjoutput.osm' )
   if(filedTime > commitTime):
     commitIndex = commitIndex - 1
-    print "old commit"
+    print("old commit")
     continue
 
   detailURL = commits[ commitIndex ]["url"] 
   if(useOAuth):
     detailURL = detailURL + "?client_id=" + client_id + "&client_secret=" + client_secret
-  details = json.loads( urllib.urlopen( detailURL ).read() )
+  details = json.loads( urllib.urlopen( detailURL ).readall().decode('utf-8') )
   
-  if( commits[ commitIndex ]["commit"].has_key( "message" ) ):
-    print commits[ commitIndex ]["commit"]["message"]
+  if( "message" in commits[ commitIndex ]["commit"] ):
+    print(commits[ commitIndex ]["commit"]["message"])
   else:
-    print "No message"
+    print("No message")
   
   osm = ET.Element('osm')
   osm.set('version', '0.6')
@@ -53,37 +54,38 @@ while commitIndex >= 0:
       # geojson file
       gjURL = file["raw_url"]
       try:
-        fileoutput = urllib.urlopen( gjURL ).read()
+        fileoutput = urllib.urlopen( gjURL ).readall().decode('utf-8')
         fileoutput = fileoutput.replace('\r','\\r').replace('\n','\\n')
         gj = json.loads( fileoutput )
       except:
-        print "not valid JSON!"
+        print("not valid JSON!")
         continue
 
       if gj["type"] == "FeatureCollection":
         # convert these features to OSM XML
         featureCount = 1
         for feature in gj["features"]:
-          id = str(featureCount)
-          if(feature.has_key("id")):
+          id = featureCount
+          if("id" in feature):
             id = feature["id"]
-          elif(feature.has_key("ID")):
+          elif("ID" in feature):
             id = feature["ID"]
-          elif(feature["properties"].has_key("id")):
+          elif("id" in feature["properties"]):
             id = feature["properties"]["id"]
-          elif(feature["properties"].has_key("ID")):
+          elif("ID" in feature["properties"]):
             id = feature["properties"]["ID"]
-          elif(feature["properties"].has_key("objectid")):
+          elif("objectid" in feature["properties"]):
             id = feature["properties"]["objectid"]
-          elif(feature["properties"].has_key("OBJECTID")):
+          elif("OBJECTID" in feature["properties"]):
             id = feature["properties"]["OBJECTID"]
+          id = str(id)
         
           if(feature["geometry"]["type"] == "Point"):
             # Node
             mn = ET.SubElement(osm, "node")
             mn.set("id", id)
-            mn.set("lat", str(feature["geometry"]["coordinates"][1]))
-            mn.set("lon", str(feature["geometry"]["coordinates"][0]))
+            mn.set("lat", str(round(feature["geometry"]["coordinates"][1],6)))
+            mn.set("lon", str(round(feature["geometry"]["coordinates"][0],6)))
             mn.set("user", "mapmeld")
             mn.set("uid", "0")
             mn.set("visible", "true")
@@ -106,8 +108,8 @@ while commitIndex >= 0:
                 nodeid = "10" + id + str(len(nodeids))
                 nodeids.append( nodeid )
                 node.set("id", nodeid )
-                node.set("lat", str(feature["geometry"]["coordinates"][ptIndex][1]))
-                node.set("lon", str(feature["geometry"]["coordinates"][ptIndex][0]))
+                node.set("lat", str(round(feature["geometry"]["coordinates"][ptIndex][1],6)))
+                node.set("lon", str(round(feature["geometry"]["coordinates"][ptIndex][0],6)))
                 node.set("user", "mapmeld")
                 node.set("uid", "0")
                 node.set("visible", "true")
@@ -139,8 +141,8 @@ while commitIndex >= 0:
                   nodeid = "10" + id + str(len(nodeids))
                   nodeids.append( nodeid )
                   node.set("id", nodeid )
-                  node.set("lat", str(ring[ptIndex][1]))
-                  node.set("lon", str(ring[ptIndex][0]))
+                  node.set("lat", str(round(ring[ptIndex][1],6)))
+                  node.set("lon", str(round(ring[ptIndex][0],6)))
                   node.set("user", "mapmeld")
                   node.set("uid", "0")
                   node.set("visible", "true")
@@ -188,17 +190,17 @@ while commitIndex >= 0:
   if(foundGeoJSON == True):
     tree = ET.ElementTree(osm)
     tree.write('gjoutput.osm')
-    os.system('geogit osm import gjoutput.osm')
-    os.system('geogit add')
+    os.system('"geogit osm import gjoutput.osm"')
+    os.system('"geogit add"')
     message = 'GitHub commit ' + commits[ commitIndex ]["sha"]
-    if( commits[ commitIndex ]["commit"].has_key( "message" ) ):
+    if( "message" in commits[ commitIndex ]["commit"] ):
       message = commits[ commitIndex ]["commit"]["message"].replace('"', '\'')
     commitTime = datetime.strptime( commits[ commitIndex ]["commit"]["committer"]["date"], "%Y-%m-%dT%H:%M:%SZ" )
     timeprint = str( time.mktime( commitTime.timetuple() ) )
     if(timeprint.find('.') > -1):
       timeprint = timeprint[ 0 : timeprint.find('.') ]
     
-    os.system('geogit commit -m "' + message + '" -t ' + timeprint + '000')
+    os.system('\'geogit commit -m "' + message + '" -t ' + timeprint + '000\'')
   
   # load next one
   commitIndex = commitIndex - 1

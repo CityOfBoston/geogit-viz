@@ -17,8 +17,9 @@ if(myurl.toLowerCase().indexOf("162.209.56.237") > -1){
 }
 
 // add an OpenStreetMap tile layer
-L.tileLayer('http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg', {
-    attribution: 'Tiles &copy; Stamen Design, Data &copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+L.tileLayer('http://{s}.tiles.mapbox.com/v3/mapmeld.map-ofpv1ci4/{z}/{x}/{y}.png', {
+//http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg', {
+    attribution: 'Tiles &copy; MapBox, Data &copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
 // wkt
