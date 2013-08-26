@@ -12,6 +12,7 @@ client_secret = os.environ.get('GITHUBCLIENTSECRET')
 
 path = os.path.abspath('').split('/')
 repo = path[len(path)-2] + "/" + path[len(path)-1]
+repo = repo[ : len(repo) - 3 ]
 
 commitURL = "https://api.github.com/repos/" + repo + "/commits"
 if(useOAuth):

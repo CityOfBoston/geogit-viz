@@ -4,6 +4,7 @@ module.exports = function(app, models){
   var libxml = require('libxmljs');
   var fs = require('fs');
   var xml2js = require('xml2js');
+  var exec = require('child_process').exec;
 
   app.get('/', function(req, res){
     res.render('index');
@@ -33,7 +34,7 @@ module.exports = function(app, models){
         project = project.substring(0, c);
       }
     }
-    //project += Math.floor( Math.random() * 900 ) + 100;
+    var suffix = Math.floor( Math.random() * 900 ) + 100;
     
     models.repos.findOne({ user: user }).exec(function(err, repo){
       if(err){
@@ -43,25 +44,26 @@ module.exports = function(app, models){
         return res.json({ error: "GitHub user already has a repo" });
       }
       
-      models.repos.find({}).sort('-port').limit(1).exec(function(err, last){
-        if(!last){
+      models.repos.find({}).sort('-port').limit(1).exec(function(err, lasts){
+        var last = lasts[0];
+        if(!last || !last.port || isNaN(last.port * 1)){
           last = { port: 2001 };
         }
-        var count = last.port + 1;
+        var count = (last.port * 1) + 1;
         
         var repo = new models.repos();
         repo.user = user;
         repo.project = project;
+        repo.suffix = suffix;
         repo.src = "https://github.com/" + user + "/" + project;
         repo.port = count;
         repo.save(function(err){
           //return res.json( { success: "added", port: (2000 + count) } );
           res.redirect("/wait/" + count);
 
-          var exec = require('child_process').exec;
-          exec("mkdir ../github/" + user + " ; mkdir ../github/" + user + "/" + project + "; cp *fromgithub.py ../github/" + user + "/" + project + "/", function(err, stdout, stderr){
-            exec("( cd ../github/" + user + "/" + project + "; python3 generatefromgithub.py )", function(err, stdout, stderr){
-              exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/github/" + user + "/" + project + " -Djetty.port=" + count, null);
+          exec("mkdir ../github/" + user + " ; mkdir ../github/" + user + "/" + project + "" + suffix +  "; cp *fromgithub.py ../github/" + user + "/" + project + "" + suffix + "/", function(err, stdout, stderr){
+            exec("( cd ../github/" + user + "/" + project + "" + suffix + "; python3 generatefromgithub.py )", function(err, stdout, stderr){
+              exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/github/" + user + "/" + project + "" + suffix + " -Djetty.port=" + count, null);
             });
           });
         });
@@ -156,10 +158,9 @@ module.exports = function(app, models){
         if(err){
           return res.json({ error: err });
         }
-        var exec = require('child_process').exec;
         exec(command + " " + targettask, function(err, stdout, stderr){
-          exec("(cd ../github/" + repo.user + "/" + repo.project + "/ ; python3 updatefromgithub.py)", function(err, stdout, stderr){
-            exec("(cd ../GeoGit/src/parent ; mvn jetty:run -pl ../web/app -f pom.xml -Dorg.geogit.web.repository=/root/github/" + repo.user + "/" + repo.project + " -Djetty.port=" + repo.port + ")", null);
+          exec("(cd ../github/" + repo.user + "/" + repo.project + "" + repo.suffix + "/ ; python3 updatefromgithub.py)", function(err, stdout, stderr){
+            exec("(cd ../GeoGit/src/parent ; mvn jetty:run -pl ../web/app -f pom.xml -Dorg.geogit.web.repository=/root/github/" + repo.user + "/" + repo.project + "" + repo.suffix + " -Djetty.port=" + repo.port + ")", null);
           });
         });
       });
@@ -191,7 +192,6 @@ module.exports = function(app, models){
   });
 
   app.get('/fresh', function(req, res){
-    var exec = require('child_process').exec;
     exec("ps aux", function(err, stdout, stderr){
       var tasks = stdout.split('\n');
       var server_tasks = [ ];

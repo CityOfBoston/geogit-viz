@@ -6,6 +6,7 @@ module.exports = function(mongoose){
   var schema = new Schema({
     user: String,
     project: String,
+    suffix: String,
     port: String,
     src: String,
     pushupdate: Boolean
