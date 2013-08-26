@@ -16,17 +16,13 @@ except:
     updating = False
 
 if(updating == True):
-  north = 15.5376
-  south = 15.349
-  east = 32.9725
-  west = 32.663
-  os.system('geogit osm download --bbox ' + str(south) + ' ' + str(west) + ' ' + str(north) + ' ' + str(east) )
+    os.system('geogit osm download --update')
 else:
-  north = 15.5376
-  south = 15.349
-  east = 32.9725
-  west = 32.663
-  os.system('geogit osm download --bbox ' + str(south) + ' ' + str(west) + ' ' + str(north) + ' ' + str(east) )
+    north = 15.5376
+    south = 15.349
+    east = 32.9725
+    west = 32.663
+    os.system('geogit osm download --bbox ' + str(south) + ' ' + str(west) + ' ' + str(north) + ' ' + str(east) )
 
 os.system('geogit add')
 os.system('geogit commit -m "update from OSM.org"')

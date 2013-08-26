@@ -6,9 +6,9 @@ import xml.etree.ElementTree as ET
 
 # avoid rate limiting - add your GitHub OAuth client_id and client_secret, but keep them secret
 useOAuth = False
-#useOAuth = True
-#client_id = "x"
-#client_secret = "x"
+useOAuth = True
+client_id = os.environ.get('GITHUBCLIENTID')
+client_secret = os.environ.get('GITHUBCLIENTSECRET')
 
 path = os.path.abspath('').split('/')
 repo = path[len(path)-2] + "/" + path[len(path)-1]
@@ -55,7 +55,7 @@ while commitIndex >= 0:
       gjURL = file["raw_url"]
       try:
         fileoutput = urllib.urlopen( gjURL ).readall().decode('utf-8')
-        fileoutput = fileoutput.replace('\r','\\r').replace('\n','\\n')
+        #fileoutput = fileoutput.replace('\r','\\r').replace('\n','\\n')
         gj = json.loads( fileoutput )
       except:
         print("not valid JSON!")

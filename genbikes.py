@@ -6,10 +6,10 @@ from datetime import datetime
 import xml.etree.ElementTree as ET
 
 # avoid rate limiting - add your GitHub OAuth client_id and client_secret, but keep them secret
-useOAuth = False
-#useOAuth = True
-#client_id = "x"
-#client_secret = "x"
+#useOAuth = False
+useOAuth = True
+client_id = os.environ.get('GITHUBCLIENTID')
+client_secret = os.environ.get('GITHUBCLIENTSECRET')
 
 repo = "stevevance/divvy-statuses"
 
@@ -47,7 +47,7 @@ while commitIndex >= 0:
       gjURL = file["raw_url"]
       try:
         fileoutput = urllib.urlopen( gjURL ).read()
-        fileoutput = fileoutput.replace('\r','\\r').replace('\n','\\n')
+        #fileoutput = fileoutput.replace('\r','\\r').replace('\n','\\n')
         gj = json.loads( fileoutput )
       except:
         print "not valid JSON!"

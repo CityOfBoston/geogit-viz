@@ -33,6 +33,7 @@ module.exports = function(app, models){
         project = project.substring(0, c);
       }
     }
+    project += Math.floor( Math.random() * 900 ) + 100;
     
     models.repos.findOne({ user: user }).exec(function(err, repo){
       if(err){
@@ -43,24 +44,17 @@ module.exports = function(app, models){
       }
       var count = 2000 + Math.floor(Math.random() * 5000);
       var exec = require('child_process').exec;
-      exec("( mkdir ../github/" + user + " ; mkdir ../github/" + user + "/" + project + "; cp *fromgithub.py ../github/" + user + "/" + project + "/ )", function(err, stdout, stderr){        
-        console.log("on port " + count);
+      exec("mkdir ../github/" + user + " ; mkdir ../github/" + user + "/" + project + "; cp *fromgithub.py ../github/" + user + "/" + project + "/", function(err, stdout, stderr){
 
         exec("( cd ../github/" + user + "/" + project + "; python3 generatefromgithub.py )", function(err, stdout, stderr){
-          console.log("ran generate script");
           res.redirect("/git/" + count);
           exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/github/" + user + "/" + project + " -Djetty.port=" + count + " &", function(err, stdout, stderr){
-            console.log(err);
-            console.log(stdout);
-            console.log(stderr);
-            console.log("started a server");
             var repo = new models.repos();
             repo.user = user;
             repo.project = project;
             repo.src = "GitHub";
             repo.port = count;
             repo.save(function(err){
-              console.log(" saved ");
               //return res.json( { success: "added", port: (2000 + count) } );
             });
           });
