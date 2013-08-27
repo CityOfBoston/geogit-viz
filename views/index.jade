@@ -26,12 +26,40 @@ div.container
       h3 More
       ul
         li
-          a(href="/permits") Boston Permits
+          a(href="/projects") Boston GIS
         li
           a(href="/divvy") Divvy Bikes
         li
-          a(href="/osm") OpenStreetMap bbox
+          a(href="/osm") OpenStreetMap BBox
         li
           a(href="/gitimport") Ben GitHub Import
     
-    iframe.span9(src="/projects?label=dateonly", height="350", frameborder="0", scrolling="no", marginheight="0", marginwidth="0")
+    iframe.span9(src="/permits?label=dateonly", height="350", frameborder="0", scrolling="no", marginheight="0", marginwidth="0")
+
+  br
+  br
+
+  .row
+    .span3
+      h3 Add your data
+      p You can quickly create your first project from GitHub, OpenStreetMap, or a local GeoGit repo
+      ul
+        li
+          a(href="/github") GitHub
+        li
+          a(href="/osmmake") OpenStreetMap
+        li
+          a(href="/push") Local Repo
+
+    .span9
+      h4 GeoGinger is built on GeoGit - a version control that thinks in geo
+      br
+      style(type="text/css") code{ display: block; background: #000; color: #fff; border: none; }
+      code geogit shp import YourShapefile.shp
+      code geogit add
+      code geogit commit -m "Initial commit!"
+      code geogit shp import ChangedShapefile.shp
+      code geogit add
+      code geogit commit -m "Made some changes, but how do I see them?"
+      code geogit remote add geoginger http://geoginger.com:2001/geogit
+      code geogit push geoginger

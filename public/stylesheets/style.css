@@ -41,3 +41,7 @@ td{
   max-height: 400px;
   overflow-y: scroll;
 }
+
+#commitlist{
+  overflow-y: scroll;
+}

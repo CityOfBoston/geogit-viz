@@ -152,7 +152,7 @@ var mapme = function(json){
     s.src = myurl + "/" + port + "/geogit/diff?oldRefSpec=" + tree_root + "&output_format=json&all=true&callback=maptoattr&show=3000";
   }
   s.type = "text/javascript";
-  document.body.appendChild(s);
+  $(document.body).append(s);
 
 };
 
@@ -188,12 +188,14 @@ var logged = function(json){
     s.src = myurl + "/" + port + "/geogit/diff?oldRefSpec=" + tree_root + "&output_format=json&all=true&showGeometryChanges=true&callback=mapme&show=3000";
   }
   s.type = "text/javascript";
-  document.body.appendChild(s);
+  $(document.body).append(s);
 
   diffs = [ ];
 
   var commit_table = document.createElement('table');
-  document.getElementById("commitlist").appendChild(commit_table);
+  $("#commitlist")
+    .append(commit_table)
+    .css({ "max-height": $(document.body).height() + "px" });
   
   var tr = document.createElement('tr');
   tr.innerHTML = '<td><small>From</small></td><td><small>To</small></td><td><small>Commit</small></td>';
@@ -241,10 +243,10 @@ var setFrom = function(i){
   from = i;
   for(var c=0;c<=total;c++){
     if(c <= i){
-      document.getElementById("to" + c).style.visibility = "visible";
+      $("#to" + c).css({ visibility: "visible" });
     }
     else{
-      document.getElementById("to" + c).style.visibility = "hidden";
+      $("#to" + c).css({ visibility: "hidden" });
     }
   }
   updateDiff();
@@ -253,10 +255,10 @@ var setTo = function(i){
   to = i;
   for(var c=0;c<=total;c++){
     if(c >= i){
-      document.getElementById("from" + c).style.visibility = "visible";
+      $("#from" + c).css({ visibility: "visible" });
     }
     else{
-      document.getElementById("from" + c).style.visibility = "hidden";
+      $("#from" + c).css({ visibility: "hidden" });
     }
   }
   updateDiff();
@@ -281,7 +283,7 @@ var updateDiff = function(){
     s.src = myurl + "/" + port + "/geogit/diff?oldRefSpec=" + diffs[from] + "&newRefSpec=" + diffs[to] + "&output_format=json&all=true&showGeometryChanges=true&callback=mapme&show=3000";
   }
   s.type = "text/javascript";
-  document.body.appendChild(s);
+  $(document.body).append(s);
 }
 
 // call for commit log
@@ -298,7 +300,7 @@ s.onerror = function(){
   var s = document.createElement('script');
   s.src = myurl + "/" + port + "/geogit/log?output_format=json&callback=logged&show=3000";
   s.type = "text/javascript";
-  document.body.appendChild(s);
+  $(document.body).append(s);
 };
-document.body.appendChild(s);
+$(document.body).append(s);
 setTimeout(s.onerror, 2600);

@@ -127,6 +127,13 @@ module.exports = function(app, models){
       if(err){
         return res.send(err);
       }
+      if(!repo){
+        return res.render('map', {
+          port: req.params.port,
+          source: "user",
+          sourceName: "user"
+        });
+      }
       res.render('map', {
         port: repo.port,
         source: repo.src,
