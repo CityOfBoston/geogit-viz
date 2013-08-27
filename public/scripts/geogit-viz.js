@@ -55,7 +55,7 @@ var mapfeature = function(feature){
     }
     else{
       // change marker to circle
-      lyr = new L.CircleMarker( lyr.getLatLng(), { color: color, opacity: 0.8, fillOpacity: 0.8 } );
+      lyr = new L.CircleMarker( lyr.getLatLng(), { color: color, opacity: 0.8, fillOpacity: 0.8, radius: 5 } );
 
       north = Math.max(north, lyr.getLatLng().lat);
       south = Math.min(south, lyr.getLatLng().lat);
@@ -196,7 +196,7 @@ var logged = function(json){
   document.getElementById("commitlist").appendChild(commit_table);
   
   var tr = document.createElement('tr');
-  tr.innerHTML = '<td><small>From</small></td><td><small>To</small></td><td><small>Date</small></td>';
+  tr.innerHTML = '<td><small>From</small></td><td><small>To</small></td><td><small>Commit</small></td>';
   commit_table.appendChild(tr);
 
   for(var c=0;c<json.response.commit.length;c++){
@@ -211,7 +211,9 @@ var logged = function(json){
       mydate = (new Date(json.response.commit[c].committer.timestamp)).toUTCString();
     }
     if((window.location + "").indexOf("label=dateonly") > -1){
-      //mydate = (new Date(json.response.commit[c].committer.timestamp)).toDateString();
+      if(!mydate || mydate == "auto update" || mydate == "update from OSM.org" || mydate == "Updated OSM data"){
+        mydate = (new Date(json.response.commit[c].committer.timestamp)).toDateString();
+      }
       commit_table.style.fontSize = "8pt";
     }
 
