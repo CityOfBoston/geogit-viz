@@ -204,11 +204,17 @@ var logged = function(json){
   
     var tr = document.createElement("tr");
     tr.className = "commit";
-    var mydate = (new Date(json.response.commit[c].committer.timestamp)).toUTCString();
+
+
+    var mydate = json.response.commit[c].message || mydate;
+    if(!mydate || mydate == "auto update" || mydate == "update from OSM.org" || mydate == "Updated OSM data"){
+      mydate = (new Date(json.response.commit[c].committer.timestamp)).toUTCString();
+    }
     if((window.location + "").indexOf("label=dateonly") > -1){
-      mydate = (new Date(json.response.commit[c].committer.timestamp)).toDateString();
+      //mydate = (new Date(json.response.commit[c].committer.timestamp)).toDateString();
       commit_table.style.fontSize = "8pt";
     }
+
     var fromRadio = '<input id="from' + c + '" name="from" type="radio" onchange="setFrom(' + c + ')"/>';
     if(c == json.response.commit.length-1){
       fromRadio = '<input id="from' + c + '" name="from" type="radio" checked="true" onchange="setFrom(' + c + ')"/>'
