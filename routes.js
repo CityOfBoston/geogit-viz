@@ -228,8 +228,11 @@ module.exports = function(app, models){
             res.write('updated permits');
             exec("(cd /root/projects; python update*.py)", function(err, stdout, stderr){
               res.write('updated projects');
-              exec("(cd /root/GeoGit/src/parent; python runall.py)", function(err, stdout, stderr){
-                res.end('restarted!');
+              exec("(cd /root/osm; python update*.py)", function(err, stdout, stderr){
+                res.write('updated OSM');
+                exec("(cd /root/GeoGit/src/parent; python runall.py)", function(err, stdout, stderr){
+                  res.end('restarted!');
+                });
               });
             });
           });

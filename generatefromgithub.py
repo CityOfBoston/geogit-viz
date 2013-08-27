@@ -76,6 +76,7 @@ while commitIndex >= 0:
           elif("OBJECTID" in feature["properties"]):
             id = feature["properties"]["OBJECTID"]
           id = str(id)
+          mn = None
         
           if(feature["geometry"]["type"] == "Point"):
             # Node
@@ -92,8 +93,54 @@ while commitIndex >= 0:
             
           elif(feature["geometry"]["type"] == "MultiPolygon"):
             # Relation
-            r = 1
-            
+            wayids = [ ]
+            for shape in feature["geometry"]["coordinates"]:
+              for ring in shape:
+                nodeids = [ ]
+                ptIndex = 0
+                for pt in ring:
+                  node = ET.SubElement(osm, "node")
+                  nodeid = "10" + id + str(len(nodeids))
+                  nodeids.append( nodeid )
+                  node.set("id", nodeid )
+                  node.set("lat", str(round(ring[ptIndex][1],6)))
+                  node.set("lon", str(round(ring[ptIndex][0],6)))
+                  node.set("user", "mapmeld")
+                  node.set("uid", "0")
+                  node.set("visible", "true")
+                  node.set("version", "1")
+                  node.set("changeset", "1")
+                  node.set("timestamp", "2008-09-21T00:00:00Z")
+                  ptIndex = ptIndex + 1
+                nodeids.append( nodeids[0] )
+                
+                way = ET.SubElement(osm, "way")
+                wayid = "20" + id + str(len(wayids))
+                wayids.append( wayid )
+                way.set("id", wayid )
+                way.set("user", "mapmeld")
+                way.set("uid", "0")
+                way.set("visible", "true")
+                way.set("version", "1")
+                way.set("changeset", "1")
+                way.set("timestamp", "2008-09-21T00:00:00Z")
+                for nodeid in nodeids:
+                  node = ET.SubElement(way, "nd")
+                  node.set("ref", nodeid)
+
+              mn = ET.SubElement(osm, "relation")
+              mn.set("id", id )
+              mn.set("user", "mapmeld")
+              mn.set("uid", "0")
+              mn.set("visible", "true")
+              mn.set("version", "1")
+              mn.set("changeset", "1")
+              mn.set("timestamp", "2008-09-21T00:00:00Z")
+              for wayid in wayids:
+                member = ET.SubElement(mn, "member")
+                member.set("type", "way")
+                member.set("ref", wayid)
+
           else:
             # Way
             if( type( feature["geometry"]["coordinates"][0][0] ) == type( 30.4 ) or type( feature["geometry"]["coordinates"][0][0] ) == type( 30 ) ):
