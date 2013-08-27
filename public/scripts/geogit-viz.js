@@ -63,6 +63,9 @@ var mapfeature = function(feature){
       west = Math.min(west, lyr.getLatLng().lng);
         //.bindPopup( makeTable( feature.attributes ) );
     }
+    if(typeof knownFeatures[ feature.id ] != "undefined" && knownFeatures[ feature.id ] && typeof knownFeatures[feature.id].geo != "undefined" ){
+      map.removeLayer( knownFeatures[ feature.id ].geo );
+    }
     knownFeatures[ feature.id ] = { geo: lyr };
     map.addLayer(lyr);
   }
@@ -79,7 +82,20 @@ var mapfeature = function(feature){
     if(fetchid == "0000000000000000000000000000000000000000"){
       fetchid = feature.oldObjectId;
     }
-    $.getJSON("/featuredetails?port=" + port + "&url=" + encodeURIComponent(myurl) + "&path=" + encodeURIComponent(feature.newPath || feature.path) + "&gitid=" + fetchid, function(data){
+    addClickable( knownFeatures[ feature.newPath || feature.path || feature], port, (feature.newPath || feature.path || feature), fetchid );
+  }
+};
+
+var addClickable = function(feature, port, rid, fetchid){
+  feature.geo.on('click', function(e){
+    if(typeof feature.table != "undefined"){
+      var mypopup = L.popup()
+        .setLatLng( e.latlng )
+        .setContent( feature.table );
+      map.openPopup(mypopup);
+      return;
+    }
+    $.getJSON("/featuredetails?port=" + port + "&url=" + encodeURIComponent(myurl) + "&path=" + encodeURIComponent(rid) + "&gitid=" + fetchid, function(data){
       var table = '<table border="1">';
       if(typeof data.path != "undefined"){
         var id = data.path.split("/")[1];
@@ -100,14 +116,13 @@ var mapfeature = function(feature){
         table += '<tr><td><strong>' + keyfix + '</strong></td><td>' + data.attributes[key].split('mapmeld')[0] + '</td></tr>';
       }
       table += '</table>';
-      try{
-        knownFeatures[ data.path ].geo.bindPopup(table);
-      }
-      catch(e){
-        console.error( data );
-      }
+      knownFeatures[ data.path ].table = table;
+      var mypopup = L.popup()
+        .setLatLng( e.latlng )
+        .setContent( table );
+      map.openPopup(mypopup);
     });
-  }
+  });
 };
 
 var mapme = function(json){
@@ -128,7 +143,7 @@ var mapme = function(json){
     // one point
     map.panTo( new L.LatLng( north, east ) );
   }
-  
+
   var s = document.createElement('script');
   if(calledback){
     s.src = myurl + ":" + port + "/geogit/diff?oldRefSpec=" + tree_root + "&output_format=json&all=true&callback=maptoattr&show=3000";
@@ -138,6 +153,7 @@ var mapme = function(json){
   }
   s.type = "text/javascript";
   document.body.appendChild(s);
+
 };
 
 var maptoattr = function(json){
@@ -237,11 +253,12 @@ var setTo = function(i){
 };
 
 var updateDiff = function(){
-  for(feature in knownFeatures){
-    if(knownFeatures[ feature ]){
-      map.removeLayer(knownFeatures[ feature ].geo);
-      //knownFeatures[ feature ] = null;
+  for(var feature in knownFeatures){
+    if(!knownFeatures[feature] || !knownFeatures[feature].geo){
+      continue;
     }
+    map.removeLayer(knownFeatures[ feature ].geo);
+    knownFeatures[ feature ] = null;
   }
   if(from == to){
     return;
