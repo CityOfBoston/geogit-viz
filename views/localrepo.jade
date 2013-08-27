@@ -1,0 +1,57 @@
+link(type="text/css", rel="stylesheet", href="/stylesheets/bootstrap-unmod.css")
+style(type="text/css") .jsonapi, .geogitapi{ display: none; } .tech{ font-family: courier, serif; } .hero-unit{ padding: 30px; }
+
+div.container
+  .row
+    .span12
+      .hero-unit
+        h1 GeoGinger Projects
+        p Push directly to GeoGinger
+
+  .row    
+    .span4
+      h3 What is GeoGit?
+      p GeoGit is an open source tool from OpenGeo to track changes in geodata.
+      p Where tools such as GitHub see line-by-line changes in files, GeoGit sees points added, attributes modified, and polygons removed.
+      br
+      h3 Why add GeoGinger?
+      p GeoGinger captures and maps your GeoGit work in the cloud.
+      p Outside developers can have their apps connect to GeoGinger to keep their data in sync.
+      p
+        span GeoGinger provides&nbsp;
+        a(href="/api") APIs
+        span &nbsp;to download data in multiple formats and see changes over time.
+
+    .span4
+      .well
+        h3 Create New Project
+        p BETA
+        form(action="/addrepo", method="POST")
+          input(type="hidden", name="repotype", value="empty")
+          label User
+          br
+          input#userinfo(type="text", name="user")
+          br
+          br
+          label Project
+          br
+          input#projectinfo(type="text", name="project")
+          br
+          input(type="submit", value="Add Repo")
+
+    .span4
+      h3 What's next
+      p GeoGinger will set up a server and a port on geoginger.com where you can push your data.
+      p Use the following commands (modeled after git) to push your data:
+      style(type="text/css") code{ display: block; background: #000; color: #fff; border: none; }
+      code geogit shp import YourShapefile.shp
+      code geogit add
+      code geogit commit -m "Initial commit!"
+      code geogit shp import ChangedShapefile.shp
+      code geogit add
+      code geogit commit -m "Made some changes, but how do I see them?"
+      code
+        span geogit remote add geoginger http://geoginger.com:
+        span#port PORT
+        span /geogit
+      code geogit push geoginger

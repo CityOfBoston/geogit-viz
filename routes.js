@@ -19,6 +19,10 @@ module.exports = function(app, models){
     });
   });
   
+  app.get('/push', function(req, res){
+    res.render('localrepo');
+  });
+  
   app.post('/addrepo', function(req, res){
     // currently allowing only one per user
     var user = req.body.user.toLowerCase();
@@ -35,6 +39,32 @@ module.exports = function(app, models){
       }
     }
     var suffix = Math.floor( Math.random() * 900 ) + 100;
+    if(req.body.repotype && req.body.repotype == "empty"){
+      // create an empty repo for pushing
+      models.repos.find({}).sort('-port').limit(1).exec(function(err, lasts){
+        var last = lasts[0];
+        if(!last || !last.port || isNaN(last.port * 1)){
+          last = { port: 2001 };
+        }
+        var count = (last.port * 1) + 1;
+        
+        var repo = new models.repos();
+        repo.user = user;
+        repo.project = project;
+        repo.suffix = suffix;
+        repo.src = "user";
+        repo.port = count;
+        repo.save(function(err){
+          //return res.json( { success: "added", port: (2000 + count) } );
+          res.redirect("/wait/" + count);
+
+          exec("mkdir ../empty/" + user + " ; mkdir ../empty/" + user + "/" + project + "" + suffix, function(err, stdout, stderr){
+            exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/empty/" + user + "/" + project + "" + suffix + " -Djetty.port=" + count, null);
+          });
+        });
+      });
+      return;
+    }
     
     models.repos.findOne({ user: user }).exec(function(err, repo){
       if(err){

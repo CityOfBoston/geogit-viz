@@ -13,4 +13,4 @@ models.repos = repo_model(mongoose);
 
 require('./routes')(app, models);
 
-app.listen(process.env.PORT || 80);
+app.listen(process.env.PORT || 3000);
