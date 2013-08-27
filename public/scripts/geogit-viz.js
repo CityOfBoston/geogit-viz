@@ -207,11 +207,13 @@ var logged = function(json){
 
 
     var mydate = json.response.commit[c].message || mydate;
+    var usedDate = false;
     if(!mydate || mydate == "auto update" || mydate == "update from OSM.org" || mydate == "Updated OSM data"){
+      usedDate = true;
       mydate = (new Date(json.response.commit[c].committer.timestamp)).toUTCString();
     }
     if((window.location + "").indexOf("label=dateonly") > -1){
-      if(!mydate || mydate == "auto update" || mydate == "update from OSM.org" || mydate == "Updated OSM data"){
+      if(usedDate){
         mydate = (new Date(json.response.commit[c].committer.timestamp)).toDateString();
       }
       commit_table.style.fontSize = "8pt";
