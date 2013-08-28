@@ -4,7 +4,9 @@ if(typeof console == "undefined"){
 
 setInterval(function(){
   $.getJSON("/" + (port*1) + "/geogit/log?output=json", function(data){
-    window.location = "/git/" + (port*1);
+    if(typeof data.response != "undefined"){
+      window.location = "/git/" + (port*1);
+    }
   }, function(data){
     console.log('waiting');
   });

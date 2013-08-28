@@ -59,7 +59,9 @@ module.exports = function(app, models){
           res.redirect("/wait/" + count);
 
           exec("mkdir ../empty/" + user + " ; mkdir ../empty/" + user + "/" + project + "" + suffix, function(err, stdout, stderr){
-            exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/empty/" + user + "/" + project + "" + suffix + " -Djetty.port=" + count, null);
+            exec("(cd ../empty/" + user + "/" + project + "" + suffix + "/; geogit init )", function(err, stdout, stderr){
+              exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/empty/" + user + "/" + project + "" + suffix + " -Djetty.port=" + count, null);
+            });
           });
         });
       });
@@ -195,6 +197,7 @@ module.exports = function(app, models){
         if(err){
           return res.json({ error: err });
         }
+        res.json({ success: "update started" });
         exec(command + " " + targettask, function(err, stdout, stderr){
           exec("(cd ../github/" + repo.user + "/" + repo.project + "" + repo.suffix + "/ ; python3 updatefromgithub.py)", function(err, stdout, stderr){
             exec("(cd ../GeoGit/src/parent ; mvn jetty:run -pl ../web/app -f pom.xml -Dorg.geogit.web.repository=/root/github/" + repo.user + "/" + repo.project + "" + repo.suffix + " -Djetty.port=" + repo.port + ")", null);

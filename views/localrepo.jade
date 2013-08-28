@@ -8,12 +8,12 @@ div.container
         h1 GeoGinger Projects
         p Push directly to GeoGinger
 
-  .row    
-    .span4
+  .row
+    .span6
       h3 What is GeoGit?
       p GeoGit is an open source tool from OpenGeo to track changes in geodata.
       p Where tools such as GitHub see line-by-line changes in files, GeoGit sees points added, attributes modified, and polygons removed.
-      br
+    .span6
       h3 Why add GeoGinger?
       p GeoGinger captures and maps your GeoGit work in the cloud.
       p Outside developers can have their apps connect to GeoGinger to keep their data in sync.
@@ -21,8 +21,11 @@ div.container
         span GeoGinger provides&nbsp;
         a(href="/api") APIs
         span &nbsp;to download data in multiple formats and see changes over time.
+  br
+  br
 
-    .span4
+  .row    
+    .span6
       .well
         h3 Create New Project
         p BETA
@@ -39,9 +42,13 @@ div.container
           br
           input(type="submit", value="Add Repo")
 
-    .span4
+    .span6
       h3 What's next
       p GeoGinger will set up a server and a port on geoginger.com where you can push your data.
+      p
+        span You need to install&nbsp;
+        a(href="http://geogit.org/") GeoGit
+        span &nbsp;to make commits.
       p Use the following commands (modeled after git) to push your data:
       style(type="text/css") code{ display: block; background: #000; color: #fff; border: none; }
       code geogit shp import YourShapefile.shp
@@ -49,9 +56,12 @@ div.container
       code geogit commit -m "Initial commit!"
       code geogit shp import ChangedShapefile.shp
       code geogit add
-      code geogit commit -m "Made some changes, but how do I see them?"
+      code geogit commit -m "Made some changes"
       code
-        span geogit remote add geoginger http://geoginger.com:
+        span geogit remote add gg http://geoginger.com:
         span#port PORT
         span /geogit
-      code geogit push geoginger
+      code geogit push gg
+
+br
+br

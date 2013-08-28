@@ -1,12 +1,24 @@
+style(type="text/css") body{ font-family: arial, sans-serif; }
+
 h3 Loading...
 
 p This page will appear until your map is ready
 
-p
-  span Your map's url will be&nbsp
-  a(href="/git/#{port}") geoginger.com/git/#{port}
-  span .
+ul
+  li
+    span Your map's url will be&nbsp
+    a(href="/git/#{port}") geoginger.com/git/#{port}
+    span .
+  li
+    span Is this a new repo?&nbsp
+    span(style="font-family:Courier, monospace;") geogit remote add gg http://geoginger.com:#{port}/geogit
+  li
+    span GitHub? Add a web hook:&nbsp;http://geoginger.com/refresh/#{port}
 
 script(type="text/javascript", src="http://code.jquery.com/jquery-1.9.1.min.js")
 script(type="text/javascript") var port = "#{port}";
 script(type="text/javascript", src="/scripts/waitbar.js")
+
+iframe(src="http://bl.ocks.org/mbostock/raw/1246403/cd587bd485ff362aabafe708e54044667118363e/", marginwidth="0", marginheight="0", scrolling="no", style="width: 960px; height: 300px; border: 1px solid #dedede;")
+br
+a(href="http://bl.ocks.org/mbostock/1246403", target="_blank") Spinny globe in D3 by Mike Bostock
