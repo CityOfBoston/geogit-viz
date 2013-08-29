@@ -19,12 +19,15 @@ module.exports = function(app, models){
     });
   });
   
+  app.get('/osm', function(req, res){
+    res.render('makeosm');
+  });
+  
   app.get('/push', function(req, res){
     res.render('localrepo');
   });
   
   app.post('/addrepo', function(req, res){
-    // currently allowing only one per user
     var user = req.body.user.toLowerCase();
     var project = req.body.project.toLowerCase();
     var acceptChars = [ "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "_", "-" ];
@@ -39,7 +42,7 @@ module.exports = function(app, models){
       }
     }
     var suffix = Math.floor( Math.random() * 900 ) + 100;
-    if(req.body.repotype && req.body.repotype == "empty"){
+    if(req.body.repotype){
       // create an empty repo for pushing
       models.repos.find({}).sort('-port').limit(1).exec(function(err, lasts){
         var last = lasts[0];
@@ -47,23 +50,45 @@ module.exports = function(app, models){
           last = { port: 2001 };
         }
         var count = (last.port * 1) + 1;
-        
+
         var repo = new models.repos();
         repo.user = user;
         repo.project = project;
         repo.suffix = suffix;
-        repo.src = "user";
         repo.port = count;
-        repo.save(function(err){
-          //return res.json( { success: "added", port: (2000 + count) } );
-          res.redirect("/wait/" + count);
 
-          exec("mkdir ../empty/" + user + " ; mkdir ../empty/" + user + "/" + project + "" + suffix, function(err, stdout, stderr){
-            exec("(cd ../empty/" + user + "/" + project + "" + suffix + "/; geogit init )", function(err, stdout, stderr){
-              exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/empty/" + user + "/" + project + "" + suffix + " -Djetty.port=" + count, null);
+        if(req.body.repotype == "empty"){
+          repo.src = "user";
+          repo.save(function(err){
+            res.redirect("/wait/" + count);
+
+            exec("mkdir ../empty/" + user + " ; mkdir ../empty/" + user + "/" + project + "" + suffix, function(err, stdout, stderr){
+              exec("(cd ../empty/" + user + "/" + project + "" + suffix + "/; geogit init )", function(err, stdout, stderr){
+                exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/empty/" + user + "/" + project + "" + suffix + " -Djetty.port=" + count, null);
+              });
             });
           });
-        });
+        }
+        else if(req.body.repotype == "osm"){
+          repo.src = "osm";
+          repo.save(function(err){
+            var south = req.body.south * 1.0;
+            var north = req.body.north * 1.0;
+            var east = req.body.east * 1.0;
+            var west = req.body.west * 1.0;
+            if(!north || !south || !east || !west || north < south || east < west){
+              return res.json({ error: "bbox not defined" });
+            }
+            else{
+              res.redirect("/wait/" + count);
+            }
+            exec("mkdir ../makeosm/" + user + " ; mkdir ../makeosm/" + user + "/" + project + "" + suffix, function(err, stdout, stderr){
+              exec("(cd ../makeosm/" + user + "/" + project + "" + suffix + "/; geogit init; geogit osm download --bbox " + south + " " + west + " " + north + " " + east + "; geogit add; geogit commit -m 'initial commit' )", function(err, stdout, stderr){
+                exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/makeosm/" + user + "/" + project + "" + suffix + " -Djetty.port=" + count, null);
+              });
+            });
+          });
+        }
       });
       return;
     }
@@ -203,6 +228,9 @@ module.exports = function(app, models){
           if(repo.src == "user"){
             repotype = "empty";
           }
+          if(repo.src == "osm"){
+            repotype = "makeosm";
+          }
           exec("(cd ../" + repotype + "/" + repo.user + "/" + repo.project + "" + repo.suffix + "/ ; python3 update*.py)", function(err, stdout, stderr){
             exec("(cd ../GeoGit/src/parent ; mvn jetty:run -pl ../web/app -f pom.xml -Dorg.geogit.web.repository=/root/" + repotype + "/" + repo.user + "/" + repo.project + "" + repo.suffix + " -Djetty.port=" + repo.port + ")", null);
           });
@@ -219,7 +247,7 @@ module.exports = function(app, models){
     });
   });
 
-  app.get('/osm', function(req, res){
+  app.get('/osm_sudan', function(req, res){
     res.render('map', {
       port: 8084,
       source: 'OpenStreetMap',

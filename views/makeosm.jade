@@ -1,0 +1,58 @@
+link(type="text/css", rel="stylesheet", href="/stylesheets/bootstrap-unmod.css")
+style(type="text/css") .jsonapi, .geogitapi{ display: none; } .tech{ font-family: courier, serif; } .hero-unit{ padding: 30px; } #map{ width: 100%; height: 200px; }
+
+div.container
+  .row
+    .span12
+      .hero-unit
+        h1 GeoGinger OSM
+        p Track local changes to OpenStreetMap
+
+  .row
+    .span6
+      h3 What is GeoGit?
+      p GeoGit is an open source tool from OpenGeo to track changes in geodata.
+      p Where tools such as GitHub see line-by-line changes in files, GeoGit sees points added, attributes modified, and polygons removed.
+      
+      h3 Why add GeoGinger?
+      p GeoGinger captures and maps your GeoGit work in the cloud.
+      p Outside developers can have their apps connect to GeoGinger to keep their data in sync.
+      p
+        span GeoGinger provides&nbsp;
+        a(href="/api") APIs
+        span &nbsp;to download data in multiple formats and see changes over time.
+
+      h3 What's next
+      p GeoGinger will set up a map, a server, and a GeoGit repo that checks for updates every day.
+      p
+        span You can also visit the refresh URL for your server,&nbsp;
+        span.tech geoginger.com/refresh/ID
+
+    .span6
+      .well
+        h3 Create New Project (beta)
+        form(action="/addrepo", method="POST")
+          input(type="hidden", name="repotype", value="osm")
+          input#north(type="hidden", name="north", value="")
+          input#south(type="hidden", name="south", value="")
+          input#east(type="hidden", name="east", value="")
+          input#west(type="hidden", name="west", value="")
+          div#map
+          label User
+          br
+          input#userinfo(type="text", name="user")
+          br
+          label Project
+          br
+          input#projectinfo(type="text", name="project")
+          br
+          input(type="submit", value="Add Repo")
+
+br
+br
+
+link(rel="stylesheet", href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css")
+// [if lte IE 8]
+  link(rel="stylesheet", href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.ie.css")
+script(type="text/javascript", src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js")
+script(type="text/javascript", src="/scripts/osmmaker.js")
