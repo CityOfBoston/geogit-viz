@@ -83,7 +83,8 @@ module.exports = function(app, models){
               res.redirect("/wait/" + count);
             }
             exec("mkdir ../makeosm/" + user + " ; mkdir ../makeosm/" + user + "/" + project + "" + suffix + "; cp *fromosm.py ../makeosm/" + user + "/" + project + "" + suffix + "/", function(err, stdout, stderr){
-              exec("(cd ../makeosm/" + user + "/" + project + "" + suffix + "/; python3 initfromosm.py " + south + " " + west + " " + north + " " + east + ' )', function(err, stdout, stderr){
+              //console.log("(cd ../makeosm/" + user + "/" + project + "" + suffix + " ; python3 initfromosm.py " + south + " " + west + " " + north + " " + east + ' )');
+              exec("(cd ../makeosm/" + user + "/" + project + "" + suffix + " ; python3 initfromosm.py " + south + " " + west + " " + north + " " + east + ' )', function(err, stdout, stderr){
                 exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/makeosm/" + user + "/" + project + "" + suffix + " -Djetty.port=" + count, null);
               });
             });
