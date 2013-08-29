@@ -48,19 +48,30 @@ var mapfeature = function(feature){
       lyr.setStyle({ color: color });
         //.bindPopup( makeTable( feature.attributes ) );
       var bounds = lyr.getBounds();
-      north = Math.max(north, bounds.getNorthEast().lat);
-      south = Math.min(south, bounds.getSouthWest().lat);
-      east = Math.max(east, bounds.getNorthEast().lng);
-      west = Math.min(west, bounds.getSouthWest().lng);
+      var outofbounds = false;
+      if(bounds.getNorthEast().lat < -90 || bounds.getNorthEast().lat > 90 || bounds.getNorthEast().lng > 180 || bounds.getNorthEast().lng < -180){
+        outofbounds = true;
+      }
+      if(bounds.getSouthWest().lat < -90 || bounds.getSouthWest().lat > 90 || bounds.getSouthWest().lng > 180 || bounds.getSouthWest().lng < -180){
+        outofbounds = true;
+      }
+      if(!outofbounds){
+        north = Math.max(north, bounds.getNorthEast().lat);
+        south = Math.min(south, bounds.getSouthWest().lat);
+        east = Math.max(east, bounds.getNorthEast().lng);
+        west = Math.min(west, bounds.getSouthWest().lng);
+      }
     }
     else{
       // change marker to circle
-      lyr = new L.CircleMarker( lyr.getLatLng(), { color: color, opacity: 0.8, fillOpacity: 0.8, radius: 5 } );
+      lyr = L.circleMarker( lyr.getLatLng(), { color: color, opacity: 0.8, fillOpacity: 0.8, radius: 5 } );
 
-      north = Math.max(north, lyr.getLatLng().lat);
-      south = Math.min(south, lyr.getLatLng().lat);
-      east = Math.max(east, lyr.getLatLng().lng);
-      west = Math.min(west, lyr.getLatLng().lng);
+      if(lyr.getLatLng().lat < 90 && lyr.getLatLng().lat > -90 && lyr.getLatLng().lng > -180 && lyr.getLatLng().lng < 180){
+        north = Math.max(north, lyr.getLatLng().lat);
+        south = Math.min(south, lyr.getLatLng().lat);
+        east = Math.max(east, lyr.getLatLng().lng);
+        west = Math.min(west, lyr.getLatLng().lng);
+      }
         //.bindPopup( makeTable( feature.attributes ) );
     }
     if(typeof knownFeatures[ feature.id ] != "undefined" && knownFeatures[ feature.id ] && typeof knownFeatures[feature.id].geo != "undefined" ){
@@ -134,7 +145,7 @@ var mapme = function(json){
   else{
     mapfeature( json.response.Feature );
   }
-  
+
   if(north > south){
     // fit all points
     map.fitBounds([ [south, west], [north, east] ]);

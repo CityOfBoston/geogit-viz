@@ -365,6 +365,9 @@ module.exports = function(app, models){
       var esriJSON;
       try{
         esriJSON = JSON.parse( b );
+        if(!esriJSON.features || !esriJSON.features.length){
+          return res.send('fail');
+        }
       }
       catch(e){
         return res.send('fail');
