@@ -5,7 +5,7 @@ L.tileLayer('http://{s}.tiles.mapbox.com/v3/mapmeld.map-ofpv1ci4/{z}/{x}/{y}.png
   attribution: 'Tiles &copy; MapBox, Data &copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-var focusbox = L.rectangle([ [42.3428127, -71.0640335], [42.368183, -70.991935] ], { color: "#ff7800", weight: 1 }).addTo(map);
+var focusbox = L.rectangle([ [42.3428127, -71.03 ], [42.368183, -71 ] ], { color: "#ff7800", weight: 1 }).addTo(map);
 
 adjustBox();
 map.on('moveend', adjustBox);
