@@ -82,8 +82,8 @@ module.exports = function(app, models){
             else{
               res.redirect("/wait/" + count);
             }
-            exec("mkdir ../makeosm/" + user + " ; mkdir ../makeosm/" + user + "/" + project + "" + suffix, function(err, stdout, stderr){
-              exec("(cd ../makeosm/" + user + "/" + project + "" + suffix + "/; geogit init; geogit osm download --bbox " + south + " " + west + " " + north + " " + east + "; geogit add; geogit commit -m 'initial commit' )", function(err, stdout, stderr){
+            exec("mkdir ../makeosm/" + user + " ; mkdir ../makeosm/" + user + "/" + project + "" + suffix + "; cp *fromosm.py ../makeosm/" + user + "/" + project + "" + suffix + "/", function(err, stdout, stderr){
+              exec("(cd ../makeosm/" + user + "/" + project + "" + suffix + "/; geogit init; geogit osm download --bbox " + south + " " + west + " " + north + " " + east + ' ; geogit add; geogit commit -m "initial commit" )', function(err, stdout, stderr){
                 exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/makeosm/" + user + "/" + project + "" + suffix + " -Djetty.port=" + count, null);
               });
             });
