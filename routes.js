@@ -199,7 +199,11 @@ module.exports = function(app, models){
         }
         res.json({ success: "update started" });
         exec(command + " " + targettask, function(err, stdout, stderr){
-          exec("(cd ../github/" + repo.user + "/" + repo.project + "" + repo.suffix + "/ ; python3 updatefromgithub.py)", function(err, stdout, stderr){
+          var repotype = "github";
+          if(repo.src == "user"){
+            repotype = "empty";
+          }
+          exec("(cd ../" + repotype + "/" + repo.user + "/" + repo.project + "" + repo.suffix + "/ ; python3 updatefromgithub.py)", function(err, stdout, stderr){
             exec("(cd ../GeoGit/src/parent ; mvn jetty:run -pl ../web/app -f pom.xml -Dorg.geogit.web.repository=/root/github/" + repo.user + "/" + repo.project + "" + repo.suffix + " -Djetty.port=" + repo.port + ")", null);
           });
         });
