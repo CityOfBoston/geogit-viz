@@ -28,16 +28,13 @@ div.container
     .span6
       .well
         h3 Create New Project
-        p BETA
         form(action="/addrepo", method="POST")
           input(type="hidden", name="repotype", value="empty")
           label User
-          br
           input#userinfo(type="text", name="user")
           br
           br
           label Project
-          br
           input#projectinfo(type="text", name="project")
           br
           input(type="submit", value="Add Repo")

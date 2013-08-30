@@ -12,8 +12,11 @@ var myurl = "http:" + (window.location+"").split(":")[1];
 if(myurl.toLowerCase().indexOf("geoginger.com") > -1){
   myurl = "http://geoginger.com";
 }
-if(myurl.toLowerCase().indexOf("162.209.56.237") > -1){
+else if(myurl.toLowerCase().indexOf("162.209.56.237") > -1){
   myurl = "http://162.209.56.237";
+}
+else if(myurl.toLowerCase().indexOf("162.209.88.82") > -1){
+  myurl = "http://162.209.88.82";
 }
 
 // add an OpenStreetMap tile layer

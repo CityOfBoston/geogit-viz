@@ -13,14 +13,15 @@ div.container
       .well
         h3 Add a Repo
         p BETA: one per user
+        strong No GeoJSON repos? Fork&nbsp
+        a(href="https://github.com/mapmeld/city-water") this one
         form(action="/addrepo", method="POST")
-          label User
           br
+          label GitHub Username
           input#userinfo(type="text", name="user")
           br
           br
           label Project
-          br
           input#projectinfo(type="text", name="project")
           br
           input(type="submit", value="Add Repo")
@@ -51,7 +52,7 @@ div.container
         li
           a(href="/divvy") Divvy Bikes - Chicago
         li
-          a(href="/git/2003") Bike Lanes - Boston
+          a(href="/git/2005") Bike Lanes - Boston
         li
           a(href="/gitimport") WiFi Hotspots - DC
 
