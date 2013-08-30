@@ -1,22 +1,18 @@
 #sidebar
   h4 Compare Commits
   div#commitlist
-
 #map
 
 link(rel="stylesheet", href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css")
 // [if lte IE 8]
   link(rel="stylesheet", href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.ie.css")
-
 link(rel="stylesheet", media="all", type="text/css", href="/stylesheets/style.css")
 
 script(type="text/javascript", src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js")
-
 script(type="text/javascript", src="/scripts/wicket.js")
 script(type="text/javascript", src="/scripts/wicket-leaflet.js")
 
 script(type="text/javascript", src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js")
 
-script(type="text/javascript") var port = #{port};
-
+script(type="text/javascript") var port = #{port}, user = "#{user}", project = "#{project}", source = "#{source}"; 
 script(type="text/javascript", src="/scripts/geogit-viz.js")

@@ -182,14 +182,74 @@ var maptoattr = function(json){
 };
 
 var from, to, total, diffs;
-var madeTable = false;
+var makingTable = false;
 
 var logged = function(json){
-
-  if($("table").length || madeTable){
+  if($("table").length || makingTable){
     return;
   }
-  madeTable = true;
+  makingTable = true;
+  
+  if(typeof json == "undefined"){
+    // repo is not initialized
+    if(source.indexOf("http:") > -1){
+      // ESRI or other set source
+      $("#sidebar").text("No content available");
+    }
+    else if(source == "osm"){
+      // OpenStreetMap
+      $("#sidebar").text("OpenStreetMap repo may have failed. Please contact ndoiron@mapmeld.com");
+    }
+    else if(source == "GitHub"){
+      // GitHub
+      $("#sidebar").text("GitHub repo may have failed. Please contact ndoiron@mapmeld.com");
+    }
+    else if(source == "user"){
+      // local repo
+      $("#sidebar").text("GeoGit repo may have failed. Please contact ndoiron@mapmeld.com");
+    }
+    return;
+  }
+  else if(typeof json.response.success != "undefined" && json.response.success == true){
+    // repo exists, but is empty
+    if(source.indexOf("http:") > -1){
+      // ESRI or other set source
+      $("#sidebar").text("No content available");
+    }
+    else if(source == "osm"){
+      // OpenStreetMap
+      $("#sidebar").text("OpenStreetMap repo has no commits. Please contact ndoiron@mapmeld.com");
+    }
+    else if(source == "GitHub"){
+      // GitHub
+      $("#sidebar").text("GitHub repo has no commits. Does <a href='https://github.com/" + user + "/" + project + "'>your repo</a> contain GeoJSON data? Is the GeoJSON visible on GitHub? Please contact ndoiron@mapmeld.com for help.");
+    }
+    else if(source == "user"){
+      // local repo
+      $("#sidebar").text("GeoGinger is ready for your commits. Use 'geogit remote add gg http://geoginger.com:" + port + "' to connect to this repo, then 'geogit push gg' to push GeoGit commits.");
+    }
+    return;
+  }
+  else if(typeof json.response.commit[ json.response.commit.length-1 ].tree == "undefined"){
+    // repo has only one commit
+    if(source.indexOf("http:") > -1){
+      // ESRI or other set source
+      $("#sidebar").text("Initial commit made. Publish changes to the data, then visit " + myurl + "/refresh/" + port);
+    }
+    else if(source == "osm"){
+      // OpenStreetMap
+      $("#sidebar").text("Initial commit made. This site checks for updates to OpenStreetMap daily, or whenever you visit " + myurl + "/refresh/" + port);
+    }
+    else if(source == "GitHub"){
+      // GitHub
+      $("#sidebar").text("Initial commit loaded. Push a change to your GeoJSON to GitHub, then visit " + myurl + "/refresh/" + port + " to update.");
+    }
+    else if(source == "user"){
+      // local repo
+      $("#sidebar").text("Initial commit loaded. Make a change to your local GeoGit repo, then push to GeoGinger.");
+    }
+    return;
+  }
 
   tree_root = json.response.commit[ json.response.commit.length-1 ].tree;
 

@@ -114,7 +114,7 @@ module.exports = function(app, models){
         repo.user = user;
         repo.project = project;
         repo.suffix = suffix;
-        repo.src = "https://github.com/" + user + "/" + project;
+        repo.src = "GitHub";
         repo.port = count;
         repo.save(function(err){
           //return res.json( { success: "added", port: (2000 + count) } );
@@ -145,16 +145,14 @@ module.exports = function(app, models){
   app.get('/permits', function(req, res){
     res.render('map', {
       port: 8080,
-      source: "http://boston.maps.arcgis.com/home/webmap/viewer.html?webmap=e36ac8b9b60542b4b834cba686fb8823",
-      sourceName: "City of Boston"
+      source: "http://boston.maps.arcgis.com/home/webmap/viewer.html?webmap=e36ac8b9b60542b4b834cba686fb8823"
     });
   });
   
   app.get('/projects', function(req, res){
     res.render('map', {
       port: 8081,
-      source: "http://gis.cityofboston.gov/Article80_dev/",
-      sourceName: "Boston Redevelopment Authority"
+      source: "http://gis.cityofboston.gov/Article80_dev/"
     });
   });
   
@@ -189,14 +187,16 @@ module.exports = function(app, models){
       if(!repo){
         return res.render('map', {
           port: req.params.port,
-          source: "user",
-          sourceName: "user"
+          source: "Uninitialized",
+          user: "",
+          project: ""
         });
       }
       res.render('map', {
         port: repo.port,
         source: repo.src,
-        sourceName: "GitHub"
+        user: repo.user,
+        project: repo.project
       });
     });
   });
@@ -244,24 +244,27 @@ module.exports = function(app, models){
   app.get('/gitimport', function(req, res){
     res.render('map', {
       port: 8082,
-      source: "https://github.com/benbalter/dc-wifi-social",
-      sourceName: "Ben Balter, GitHub"
+      source: "GitHub",
+      user: "benbalter",
+      project: "dc-wifi-social"
     });
   });
 
   app.get('/osm_sudan', function(req, res){
     res.render('map', {
       port: 8084,
-      source: 'OpenStreetMap',
-      sourceName: 'OpenStreetMap'
+      source: 'osm',
+      user: 'OpenStreetMap',
+      project: 'Sudan'
     });
   });
 
   app.get('/divvy', function(req, res){
     res.render('map', {
       port: 8083,
-      source: "https://github.com/stevevance/divvy-statuses",
-      sourceName: "Divvy Bikes"
+      source: "GitHub",
+      user: "stevevance",
+      project: "divvy-statuses"
     });
   });
 
