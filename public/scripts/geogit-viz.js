@@ -210,7 +210,7 @@ var logged = function(json){
     }
     return;
   }
-  else if(typeof json.response.success != "undefined" && typeof json.response.commit.length == "undefined"){
+  else if(typeof json.response.success != "undefined" && typeof json.response.commit == "undefined"){
     // repo exists, but is empty
     if(source.indexOf("http:") > -1){
       // ESRI or other set source
@@ -230,7 +230,7 @@ var logged = function(json){
     }
     return;
   }
-  else if(typeof json.response.commit[ json.response.commit.length-1 ].tree == "undefined"){
+  else if(typeof json.response.commit.tree != "undefined"){
     // repo has only one commit
     if(source.indexOf("http:") > -1){
       // ESRI or other set source
