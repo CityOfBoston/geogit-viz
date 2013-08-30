@@ -210,7 +210,7 @@ var logged = function(json){
     }
     return;
   }
-  else if(typeof json.response.success != "undefined" && typeof json.response.commit == "undefined"){
+  else if(typeof json.response.success != "undefined" && typeof json.response.commit.length == "undefined"){
     // repo exists, but is empty
     if(source.indexOf("http:") > -1){
       // ESRI or other set source
