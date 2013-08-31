@@ -63,7 +63,7 @@ module.exports = function(app, models){
           repo.save(function(err){
             res.redirect("/wait/" + count);
 
-            exec("mkdir ../empty/" + user + " ; mkdir ../empty/" + user + "/" + project + "" + suffix, function(err, stdout, stderr){
+            exec("mkdir ../empty/" + user + " ; mkdir ../empty/" + user + "/" + project + "" + suffix + "; cp *fromrepo.py ../empty/" + user + "/" + project + "" + suffix + "/", function(err, stdout, stderr){
               exec("(cd ../empty/" + user + "/" + project + "" + suffix + "/; geogit init )", function(err, stdout, stderr){
                 exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/empty/" + user + "/" + project + "" + suffix + " -Djetty.port=" + count, null);
               });
@@ -84,7 +84,6 @@ module.exports = function(app, models){
               res.redirect("/wait/" + count);
             }
             exec("mkdir ../makeosm/" + user + " ; mkdir ../makeosm/" + user + "/" + project + "" + suffix + "; cp *fromosm.py ../makeosm/" + user + "/" + project + "" + suffix + "/", function(err, stdout, stderr){
-              //console.log("(cd ../makeosm/" + user + "/" + project + "" + suffix + " ; python3 initfromosm.py " + south + " " + west + " " + north + " " + east + ' )');
               exec("(cd ../makeosm/" + user + "/" + project + "" + suffix + " ; python3 initfromosm.py " + south + " " + west + " " + north + " " + east + ' )', function(err, stdout, stderr){
                 exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/makeosm/" + user + "/" + project + "" + suffix + " -Djetty.port=" + count, null);
               });
