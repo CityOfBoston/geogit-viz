@@ -248,3 +248,9 @@ while commitIndex >= 0:
   
   # load next one
   commitIndex = commitIndex - 1
+
+# make export shapefiles
+os.system('geogit shp export HEAD:node /root/geogit-viz/public/' + repo + '/shp/node.shp --alter -o')
+os.system('geogit shp export HEAD:way /root/geogit-viz/public/' + repo + '/shp/way.shp --alter -o')
+os.system('geogit shp export HEAD:relation /root/geogit-viz/public/' + repo + '/shp/relation.shp --alter -o')
+os.system('zip /root/geogit-viz/public/' + repo + '/shp.zip /root/geogit-viz/public/' + repo + '/shp/node.* /root/geogit-viz/public/' + repo + '/shp/way.* /root/geogit-viz/public/' + repo + '/shp/relation.*')

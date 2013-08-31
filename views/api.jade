@@ -29,9 +29,10 @@ div.container
           h4 Table of Contents
           ul
             li
-              a(href="#shapefiles") Shapefiles
-            li
-              a(href="#geojson") GeoJSON
+              a(href="#shapefiles") Shapefile
+            //
+              li
+                a(href="#geojson") GeoJSON
             li
               a(href="#osmxml") OSM XML
         .jsonapi
@@ -77,13 +78,15 @@ div.container
             p If you are using ArcGIS or QGIS, you may want to use this format.
             p
               a(href="https://en.wikipedia.org/wiki/Shapefile") More about Shapefiles
-          li
-            a(name="geojson")
-            h4 GeoJSON
-            p A custom GeoGinger / gdal script exports the layer in GeoJSON format. GeoJSON is a standard formatting of JSON that is supported by many web mapping libraries and a few desktop applications.
-            p GeoJSON files are automatically rendered as maps in GitHub repos.
-            p
-              a(href="http://geojson.org/geojson-spec.html") GeoJSON Reference
+        
+          //
+            li
+              a(name="geojson")
+              h4 GeoJSON
+              p A custom GeoGinger / gdal script exports the layer in GeoJSON format. GeoJSON is a standard formatting of JSON that is supported by many web mapping libraries and a few desktop applications.
+              p GeoJSON files are automatically rendered as maps in GitHub repos.
+              p
+                a(href="http://geojson.org/geojson-spec.html") GeoJSON Reference
             
           li
             a(name="osmxml")

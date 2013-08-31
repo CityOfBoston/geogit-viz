@@ -360,6 +360,26 @@ var updateDiff = function(){
   $(document.body).append(s);
 }
 
+// enable download dropdown
+$("#download").on("change", function(){
+  var format = $("#download").val();
+  if(format == ""){
+    return;
+  }
+  switch(format){
+    case "shp":
+      window.location = "/" + user + "/" + project + "/shp.zip";
+      break;
+    case "pg":
+      window.location = "/" + user + "/" + project + "/pg.zip";
+      break;
+    case "sl":
+      window.location = "/" + user + "/" + project + "/sl.zip";
+      break;
+  }
+  $("#download").val("");
+});
+
 // call for commit log
 var calledback = false;
 var s = document.createElement('script');

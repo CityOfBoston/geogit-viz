@@ -456,7 +456,6 @@ module.exports = function(app, models){
     request(requestOptions, function (err, response, b) {
       res.send( b );
     });
-
   });
   
 };
