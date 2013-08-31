@@ -289,6 +289,7 @@ var logged = function(json){
       mydate = (new Date(json.response.commit[c].committer.timestamp)).toUTCString();
     }
     if((window.location + "").indexOf("label=dateonly") > -1){
+      $(".key").css({ zoom: 0.8 });
       if(usedDate){
         mydate = (new Date(json.response.commit[c].committer.timestamp)).toDateString();
       }
