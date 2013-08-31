@@ -20,6 +20,7 @@ os.system('geogit shp export HEAD:way /root/geogit-viz/public/' + repo + '/shp/w
 os.system('geogit shp export HEAD:relation /root/geogit-viz/public/' + repo + '/shp/relation.shp --alter -o')
 os.system('zip /root/geogit-viz/public/' + repo + '/shp.zip /root/geogit-viz/public/' + repo + '/shp/node.* /root/geogit-viz/public/' + repo + '/shp/way.* /root/geogit-viz/public/' + repo + '/shp/relation.*')
 
+"""
 os.system('geogit pg export HEAD:node /root/geogit-viz/public/' + repo + '/pg/node.pg --alter -o')
 os.system('geogit pg export HEAD:way /root/geogit-viz/public/' + repo + '/pg/way.pg --alter -o')
 os.system('geogit pg export HEAD:relation /root/geogit-viz/public/' + repo + '/pg/relation.pg --alter -o')
@@ -29,3 +30,4 @@ os.system('geogit sl export HEAD:node /root/geogit-viz/public/' + repo + '/sl/no
 os.system('geogit sl export HEAD:way /root/geogit-viz/public/' + repo + '/sl/way.sl --alter -o')
 os.system('geogit sl export HEAD:relation /root/geogit-viz/public/' + repo + '/sl/relation.sl --alter -o')
 os.system('zip /root/geogit-viz/public/' + repo + '/sl.zip /root/geogit-viz/public/' + repo + '/sl/node.* /root/geogit-viz/public/' + repo + '/sl/way.* /root/geogit-viz/public/' + repo + '/sl/relation.*')
+"""
