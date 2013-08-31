@@ -33,29 +33,39 @@ div.container
         span The most popular website for sharing work with Git today is&nbsp;
         a(href="http://github.com") GitHub
         span .
-        p When you share GeoJSON files on GitHub, the site will make interactive maps of your data.
+        p
+          span When you share GeoJSON files on GitHub, the site makes&nbsp;
+          a(href="https://github.com/cambridgegis/cambridgegis_data/blob/master/Landmark/Municipal_Buildings/LANDMARK_MunicipalBuildings.geojson", target="_blank") interactive maps
+          span &nbsp;of your data.
       br
       h3 Why add GeoGinger?
-      p GeoGinger thinks in geo. Where GitHub sees line-by-line changes in files, GeoGinger's underlying technology sees points added, attributes modified, and polygons removed.
+      p GeoGinger thinks in geo. Where GitHub sees line-by-line changes in files, GeoGinger's core technology (GeoGit) sees points added, attributes modified, and polygons removed.
       p Outside developers can have their apps connect to GeoGinger to keep their data in sync.
       p
-        span GeoGinger also provides&nbsp;
+        span GeoGinger provides&nbsp;
         a(href="/api") APIs
         span &nbsp;to download data in multiple formats and see changes over time.
         
     .span4
       h3 Perfect Sync
       p GeoGinger checks GitHub daily for changes to your GeoJSON files.
-      p Commits on GeoGinger have the same message and timestamp as your commit to GitHub. Everything matches up!
-      p There are currently three examples:
+      p Commits on GeoGinger have the same message and time as your commits to GitHub. Everything matches up!
+      p There are four examples:
       ul
         li
           a(href="/divvy") Divvy Bikes - Chicago
         li
           a(href="/git/2005") Bike Lanes - Boston
         li
+          a(href="/git/2023") Water Areas - Cambridge
+        li
           a(href="/gitimport") WiFi Hotspots - DC
 
       h3 Update automatically
       p Adding a web hook on GitHub notifies GeoGinger when you push an update. GeoGinger will then sync to match your GitHub.
-      p Directions are coming - but if you know what to do, just add http://geoginger.com/refresh/PORT
+      p
+        span Go to your GitHub repo's&nbsp;
+        a(href="/images/githubsync1.png") admin panel
+        span , then&nbsp;
+        a(href="/images/githubsync2.png") add a web hook
+        span &nbsp; pointing to http://geoginger.com/refresh/MAPID with your map's four-digit ID.

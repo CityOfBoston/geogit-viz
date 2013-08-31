@@ -281,7 +281,6 @@ var logged = function(json){
     var tr = document.createElement("tr");
     tr.className = "commit";
 
-
     var mydate = json.response.commit[c].message || mydate;
     var usedDate = false;
     if(!mydate || mydate == "auto update" || mydate == "update from OSM.org" || mydate == "Updated OSM data"){
@@ -289,7 +288,6 @@ var logged = function(json){
       mydate = (new Date(json.response.commit[c].committer.timestamp)).toUTCString();
     }
     if((window.location + "").indexOf("label=dateonly") > -1){
-      $(".key").css({ zoom: 0.8 });
       if(usedDate){
         mydate = (new Date(json.response.commit[c].committer.timestamp)).toDateString();
       }
@@ -361,7 +359,16 @@ var updateDiff = function(){
   $(document.body).append(s);
 }
 
+// shrink key in embed mode
+if((window.location + "").indexOf("label=dateonly") > -1){
+  $(".key").css({ zoom: 0.8 });
+}
+
 // enable download dropdown
+if(typeof source != "undefined" && source == "GitHub"){
+  var osmoption = $("<option value='osm'>OSM XML</option>");
+  $("#download").append( osmoption );
+}
 $("#download").on("change", function(){
   var format = $("#download").val();
   if(format == ""){
