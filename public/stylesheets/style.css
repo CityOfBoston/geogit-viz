@@ -7,41 +7,56 @@ html, body, #map{
   padding: 0;
   background-color: #fff;
 }
-
 #sidebar{
   width: 15%;
   padding: 20px;
   float: left;
 }
-
+.key div{
+  display: inline;
+  padding: 8px 15px;
+  border-radius: 12px;
+  color: #fff;
+  font-weight: bold;
+  font-size: 16px;
+}
+.key img{
+  height: 16px;
+  width: 16px;
+  margin-left: -4px;
+  margin-right: -4px;
+}
+.added{
+  background-color: #8e8;
+}
+.modified{
+  background-color: #88f;
+}
+.removed{
+  background-color: #f88;
+}
 #map{
   width: 75%;
   float: left;
 }
-
 div.commit{
   margin-bottom: 8px;
   vertical-align: middle;
   text-align: right;
 }
-
 div.commit input{
   margin-right: 16px;
 }
-
 small{
   padding-left: 8px;
 }
-
 td{
   padding-bottom: 10px;
 }
-
 .leaflet-popup-content{
   max-height: 400px;
   overflow-y: scroll;
 }
-
 #commitlist{
   overflow-y: scroll;
 }

@@ -370,6 +370,9 @@ $("#download").on("change", function(){
     case "shp":
       window.location = "/" + user + "/" + project + "/shp.zip";
       break;
+    case "osm":
+      window.location = "/" + user + "/" + project + "/osm.osm";
+      break;
     case "pg":
       window.location = "/" + user + "/" + project + "/pg.zip";
       break;

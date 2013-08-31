@@ -1,11 +1,17 @@
 #sidebar
   if user && project
     h3 #{user}/#{project}
+  div.key
+    div.added +
+    div.modified
+      img(src="/images/editmark.png")
+    div.removed -
   h4 Compare Commits
   div#commitlist
   select#download
     option(value="", selected="selected") Download latest
     option(value="shp") Shapefile
+    option(value="osm") OSM XML
     //
       option(value="pg") PostGIS
       option(value="sl") Spatialite
