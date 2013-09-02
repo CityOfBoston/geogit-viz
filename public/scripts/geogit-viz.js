@@ -3,10 +3,18 @@ var knownFeatures = { };
 var map = L.map('map').setView( [ 42.361207, -71.06506 ], 12 );
 map.attributionControl.setPrefix('');
 
-var north = -90;
 var south = 90;
-var east = -180;
 var west = 180;
+var north = -90;
+var east = -180;
+
+if(coords && coords.length){
+  south = coords[0];
+  west = coords[1];
+  north = coords[2];
+  east = coords[3];
+  map.fitBounds([ [ south, west ], [ north, east ] ]);
+}
 
 var myurl = "http:" + (window.location+"").split(":")[1];
 if(myurl.toLowerCase().indexOf("geoginger.com") > -1){
@@ -359,9 +367,10 @@ var updateDiff = function(){
   $(document.body).append(s);
 }
 
-// shrink key in embed mode
+// shrink key and hide download in embed mode
 if((window.location + "").indexOf("label=dateonly") > -1){
   $(".key").css({ zoom: 0.8 });
+  $("#download").css({ display: "none" });
 }
 
 // enable download dropdown

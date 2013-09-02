@@ -72,11 +72,12 @@ module.exports = function(app, models){
         }
         else if(req.body.repotype == "osm"){
           repo.src = "osm";
+          var south = req.body.south * 1.0;
+          var west = req.body.west * 1.0;
+          var north = req.body.north * 1.0;
+          var east = req.body.east * 1.0;
+          repo.coords = [ south, west, north, east ];
           repo.save(function(err){
-            var south = req.body.south * 1.0;
-            var north = req.body.north * 1.0;
-            var east = req.body.east * 1.0;
-            var west = req.body.west * 1.0;
             if(!north || !south || !east || !west || north < south || east < west){
               return res.json({ error: "bbox not defined" });
             }
@@ -191,11 +192,15 @@ module.exports = function(app, models){
           project: ""
         });
       }
+      if(!repo.coords || !repo.coords.length){
+        repo.coords = [ ];
+      }
       res.render('map', {
         port: repo.port,
         source: repo.src,
         user: repo.user,
-        project: repo.project
+        project: repo.project,
+        coords: repo.coords.join(",")
       });
     });
   });

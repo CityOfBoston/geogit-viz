@@ -9,7 +9,8 @@ module.exports = function(mongoose){
     suffix: String,
     port: String,
     src: String,
-    pushupdate: Boolean
+    pushupdate: Boolean,
+    coords: [ ]
   });
 
   return mongoose.model(collection, schema);
