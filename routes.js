@@ -260,7 +260,7 @@ module.exports = function(app, models){
         if(err){
           return; // res.json({ error: err });
         }
-        res.json({ success: "update started" });
+        //res.json({ success: "update started" });
         exec(command + " " + targettask, function(err, stdout, stderr){
           var repotype = "github";
           if(repo.src == "user"){
