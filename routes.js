@@ -232,7 +232,8 @@ module.exports = function(app, models){
     });
   });
   app.get('/refresh/:port', function(req, res){  
-    return refreshPort(req, res);
+    refreshPort(req, res);
+    res.json({ success: "update started" });
   });
   
   function refreshPort(req, res){
@@ -257,7 +258,7 @@ module.exports = function(app, models){
       }
       models.repos.findOne({ port: req.params.port }).exec(function(err, repo){
         if(err){
-          return res.json({ error: err });
+          return; // res.json({ error: err });
         }
         res.json({ success: "update started" });
         exec(command + " " + targettask, function(err, stdout, stderr){
