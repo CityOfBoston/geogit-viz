@@ -19,6 +19,8 @@ if(useOAuth):
   commitURL = commitURL + "?client_id=" + client_id + "&client_secret=" + client_secret
 commits = json.loads( urllib.urlopen( commitURL ).readall().decode('utf-8') )
 
+allfeatures = [ ]
+
 commitIndex = len( commits ) - 1
 
 while commitIndex >= 0:
@@ -65,6 +67,7 @@ while commitIndex >= 0:
       if gj["type"] == "FeatureCollection":
         # convert these features to OSM XML
         featureCount = 1
+        allfeatures.extend( gj["features"] )
         for feature in gj["features"]:
           id = featureCount
           if("id" in feature):
@@ -216,6 +219,12 @@ os.system('zip /root/geogit-viz/public/' + repo + '/shp.zip /root/geogit-viz/pub
 
 # OSM file
 os.system('cp gjoutput.osm /root/geogit-viz/public/' + repo + '/osm.osm')
+
+# GeoJSON file
+gjoutput = open('/root/geogit-viz/public/' + repo + '/current.geojson', 'w')
+gjcombined = { "type": "FeatureCollection", "features": allfeatures }
+gjoutput.write( json.dumps( gjcombined ) )
+gjoutput.close()
 
 """
 os.system('geogit pg export HEAD:node /root/geogit-viz/public/' + repo + '/pg/node.pg --alter -o')
