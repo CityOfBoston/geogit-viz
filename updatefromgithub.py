@@ -51,11 +51,13 @@ while commitIndex >= 0:
   
   fileList = details["files"]
   foundGeoJSON = False
-  allfeatures = [ ]
   
   for file in fileList:
     if(file["filename"].lower().find('.geojson') > -1):
-      foundGeoJSON = True
+      if(foundGeoJSON == False):
+        allfeatures = [ ]
+        foundGeoJSON = True
+
       # geojson file
       gjURL = file["raw_url"]
       try:

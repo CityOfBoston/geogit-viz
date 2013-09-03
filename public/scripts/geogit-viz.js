@@ -378,7 +378,7 @@ if((window.location + "").indexOf("label=dateonly") > -1){
 }
 
 // enable download dropdown
-if(typeof source != "undefined" && source == "GitHub"){
+if((typeof source != "undefined") && ((source == "GitHub") || (source == "osm" && coords && coords.length))){
   var osmoption = $("<option value='osm'>OSM XML</option>");
   $("#download").append( osmoption );
 }
@@ -392,7 +392,18 @@ $("#download").on("change", function(){
       window.location = "/" + user + "/" + project + "/shp.zip";
       break;
     case "osm":
-      window.location = "/" + user + "/" + project + "/osm.osm";
+      if(typeof source != "undefined"){
+        if(source == "GitHub"){
+          window.location = "/" + user + "/" + project + "/osm.osm";
+        }
+        else if(source == "osm"){
+          // [s,w,n,e] to [w,s,e,n]
+          window.location = "http://openstreetmap.org/api/0.6/map?bbox=" + coords[1] + "," + coords[0] + "," + coords[3] + "," + coords[2];
+        }
+      }
+      break;
+    case "gj":
+      window.location = "/" + user + "/" + project + "/current.geojson";
       break;
     case "pg":
       window.location = "/" + user + "/" + project + "/pg.zip";

@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, json
 
 args = sys.argv
 coords = [ args[1], args[2], args[3], args[4] ]
@@ -15,10 +15,36 @@ repo = repo[ : len(repo)-3 ]
 
 os.system('mkdir /root/geogit-viz/public/' + repo.split('/')[0] + ' ; mkdir /root/geogit-viz/public/' + repo + ' ; mkdir /root/geogit-viz/public/' + repo + '/shp ; mkdir /root/geogit-viz/public/' + repo + '/pg ; mkdir /root/geogit-viz/public/' + repo + '/sl')
 
+# make shapefiles
 os.system('geogit shp export HEAD:node /root/geogit-viz/public/' + repo + '/shp/node.shp --alter -o')
 os.system('geogit shp export HEAD:way /root/geogit-viz/public/' + repo + '/shp/way.shp --alter -o')
 os.system('geogit shp export HEAD:relation /root/geogit-viz/public/' + repo + '/shp/relation.shp --alter -o')
 os.system('zip /root/geogit-viz/public/' + repo + '/shp.zip /root/geogit-viz/public/' + repo + '/shp/node.* /root/geogit-viz/public/' + repo + '/shp/way.* /root/geogit-viz/public/' + repo + '/shp/relation.*')
+
+# ogr2ogr GeoJSON files
+os.system('rm *.geojson')
+gjout = { "type": "FeatureCollection", "features": [ ] }
+if os.path.isfile('/root/geogit-viz/public/' + repo + '/shp/node.shp'):
+  os.system('ogr2ogr node.geojson -f "GeoJSON" /root/geogit-viz/public/' + repo + '/shp/node.shp')
+  gjin = open('node.geojson', 'r')
+  gjout["features"] = json.load( gjin )["features"]
+  gjin.close()
+
+if os.path.isfile('/root/geogit-viz/public/' + repo + '/shp/way.shp'):
+  os.system('ogr2ogr way.geojson -f "GeoJSON" /root/geogit-viz/public/' + repo + '/shp/way.shp')
+  gjin = open('way.geojson', 'r')
+  gjout["features"].extend( json.load( gjin )["features"] )
+  gjin.close()
+
+if os.path.isfile('/root/geogit-viz/public/' + repo + '/shp/relation.shp'):
+  os.system('ogr2ogr relation.geojson -f "GeoJSON" /root/geogit-viz/public/' + repo + '/shp/relation.shp')
+  gjin = open('relation.geojson', 'r')
+  gjout["features"].extend( json.load( gjin )["features"] )
+  gjin.close()
+
+gjfile = open('/root/geogit-viz/public/' + repo + '/current.geojson', 'w')
+gjfile.write( json.dumps( gjout ) )
+gjfile.close()
 
 """
 os.system('geogit pg export HEAD:node /root/geogit-viz/public/' + repo + '/pg/node.pg --alter -o')
