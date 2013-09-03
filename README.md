@@ -1,18 +1,16 @@
 # GeoGit-Viz
 
-Map the changes to a <a href="http://geogit.org">GeoGit</a> repo, commit by commit.
+Store and visualize <a href="http://geogit.org">GeoGit</a> repos in the cloud:
 
-Sample diff:
+* Create GeoGit repo from a local repo, GitHub, or OpenStreetMap
 
-<img src="https://raw.github.com/mapmeld/geogit-viz/master/screenshot.png"/>
+<img src="https://raw.github.com/CityOfBoston/geogit-viz/master/osmimport.png"/>
 
-Real data diff using Boston's Permits service
+* Dial-a-Diff: compare any commits in the GeoGit repo history
 
-<img src="https://raw.github.com/mapmeld/geogit-viz/master/permitdiff.png"/>
+<img src="https://raw.github.com/CityOfBoston/geogit-viz/master/dialadiff.png"/>
 
-Dial-a-Diff: compare any commits in the GeoGit repo history
-
-<img src="https://raw.github.com/mapmeld/geogit-viz/master/dialadiff.png"/>
+* Download: get the latest version in GeoJSON, OSM XML, and Shapefile formats
 
 ## Setup (tested on Ubuntu 12 or Mac OSX)
 
@@ -20,11 +18,11 @@ Dial-a-Diff: compare any commits in the GeoGit repo history
 
 * Install git
 
-* Download GeoGit from my GitHub - the stable download does not include the web API, and OpenGeo does not yet support time-enabled commits.
+* Download the latest version of GeoGit from OpenGeo's GitHub
 
         git clone https://github.com/opengeo/GeoGit.git ~/GeoGit
 
-* Install geogit's prerequisites (Java JDK, Maven, Jetty)
+* Install GeoGit's prerequisites (Java JDK, Maven, Jetty)
 
 * Build GeoGit / run all tests with
 
@@ -57,11 +55,17 @@ Dial-a-Diff: compare any commits in the GeoGit repo history
 
 * Test that API server is running by going to http://localhost:8080
 
+### Set up your database
+
+* Install and start MongoDB
+
+* Create an environment variable called SECRETKEY
+
 ### Download and build this repo (geogit-viz)
 
 * Download geogit-viz from GitHub
 
-        git clone https://github.com/mapmeld/geogit-viz.git ~/geogit-viz
+        git clone https://github.com/CityOfBoston/geogit-viz.git ~/geogit-viz
 
 * Install Node.js and (if not included) NPM
 
@@ -73,20 +77,19 @@ Dial-a-Diff: compare any commits in the GeoGit repo history
 
 * View the map at http://localhost - note that no data will be visible in your initial commit
 
-### Add more repos
+### Set up GeoGit-as-a-Service
 
-* After creating a GeoGit repo in another directory, start an API server on another port with:
+* Install gdal so that you can run ogr2ogr
 
-        cd ~/GeoGit/src/parent
-        mvn jetty:run -pl ../web/app -f pom.xml -Dorg.geogit.web.repository=/path/to/another-repo/ -Djetty.port=8081
+* Make directories /root/github, /root/makeosm, and /root/empty
 
-### Update data
+* Describe services on /api, /push, /github, and /osm
 
-* If you already have a shapefile, OSM XML, Spatialite, or PostGIS database, you can use geogit to continue importing, adding, and commiting that data. You're all set!
+## Working with GeoGit
 
-* geogit-viz has two example updaters which save ArcGIS REST API service data as OSM-format XML files (/update\_from\_gis and /update\_dev\_projects)
+* If you have a shapefile, OSM XML, Spatialite, or PostGIS database, you can set up a local GeoGit repo
 
-* Stop your GeoGit web API processes before importing data
+* Stop any related GeoGit web API process before importing, adding, or committing data to a repo
 
 * Import and commit data to your GeoGit repo. The response after 'geogit commit' will let you know if any points were added, modified, or removed.
 
@@ -95,45 +98,59 @@ Dial-a-Diff: compare any commits in the GeoGit repo history
         geogit add
         geogit commit -m "updated geodata from server"
 
-* Restart API processes.
+* You won't see changes on the geogit-viz map until your second commit. Until then, you can verify the API is working at http://localhost:8080/geogit/log 
 
-* You won't see changes on the map until your second commit. Until then, you can verify the API is working at http://localhost:8080 and http://localhost:8080/geogit/log 
+### Work with a GeoGit repo on the web
+
+#### Pushing to a new repo
+
+* On <a href="http://geoginger.com/push">/push</a>, create a project and copy its GeoGit URL (for example, http://geoginger.com:8080/geogit ).
+
+* Push your GeoGit repo to the server
+
+        geogit remote add gg GEOGIT_URL
+        geogit push gg
+
+#### Cloning an existing repo
+
+* Find a project's GeoGit URL (for example, http://geoginger.com:8080/geogit )
+
+* Clone the GeoGit repo from the server to a local directory
+
+        geogit clone GEOGIT_URL /Users/username/repodirectory
+
+### Track a service on ArcGIS Server
+
+* geogit-viz has two example updaters which save ArcGIS REST API service data as OSM-format XML files (/update\_from\_gis and /update\_dev\_projects)
 
 ### Import a repo from GitHub
 
 Are you already sharing maps on GitHub?  GeoGit can import your GeoJSON files into a GeoGit commit history.
 
-* Enable OAuth and add your keys to the generatefromgit.py script:
+* Register an OAuth application on GitHub: https://github.com/settings/applications/new
 
-        #useOAuth = False
-        useOAuth = True
-        client_id = "x"
-        client_secret = "x"
+* Add your OAuth keys as environment variables GITHUBCLIENTID and GITHUBCLIENTSECRET
 
-* Edit the repo in the generatefromgit.py script:
-
-        repo = "USERNAME/REPONAME"
+* Put the script inside user/project111 directory or set repo in generatefromgithub.py to 'user/project'
 
 * Create and populate the repo using this script
 
-        python generatefromgit.py
+        python3 generatefromgithub.py
 
-## Goal
+* Apply future updates using this script:
+
+        python3 updatefromgithub.py
+
+## Applications
 
 * GeoGit script keeps track of changes to the city's data via ArcGIS REST API
 
-* Map visualization of changes
+* Show changes to a dataset or a data-collection project over time
 
-### Keeping in sync [TODO]
+* Track changes to OpenStreetMap
 
 * User exports data in preferred format
 
-* User notes either the day or commit ID of their data
+* User can retrieve all changes since their download by sending a commit ID to the JSON API
 
-* User can see all changes since their download by sending their commit ID to the JSON API
-
-### More complex ideas [TODO]
-
-* User could clone a GeoGit repo and use it to apply changes to shapefiles used in a TileMill map
-
-* User could subscribe to receive updates, JSON diffs
+* User can clone a GeoGit repo and use it to keep sources of a TileMill map in sync with the GeoGit repo
