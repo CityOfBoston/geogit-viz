@@ -166,7 +166,20 @@ module.exports = function(app, models){
           return res.send('done');
         }
         var repo = repos[r];
-        exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/github/" + repo.user + "/" + repo.project + " -Djetty.port=" + repo.port + " &", null);
+        var repotype = "github";
+        if(repo.src == "user"){
+          repotype = "empty";
+        }
+        if(repo.src == "osm"){
+          repotype = "makeosm";
+        }
+        var directoryCheck = fs.lstatSync("/root/" + repotype + "/" + repo.user + "/" + repo.project + "" + repo.suffix);
+        if(directoryCheck.isDirectory()){
+          refreshPort( req, res );
+        }
+        else{
+          return res.json({ deleting: repo });
+        }
         setTimeout(function(){
           runRepo(r+1);
         }, 2000);
@@ -204,7 +217,11 @@ module.exports = function(app, models){
       });
     });
   });
-  app.get('/refresh/:port', function(req, res){
+  app.get('/refresh/:port', function(req, res){  
+    return refreshPort(req, res);
+  });
+  
+  function refreshPort(req, res){
     exec("ps aux", function(err, stdout, stderr){
       var tasks = stdout.split('\n');
       var targettask;
@@ -243,7 +260,7 @@ module.exports = function(app, models){
         });
       });
     });
-  });
+  }
 
   app.get('/gitimport', function(req, res){
     res.render('map', {
@@ -291,6 +308,10 @@ module.exports = function(app, models){
               tasknum = tasknum.substring(0, c);
               break;
             }
+          }
+          if(tasknum * 1 < 8080){
+            // only use /fresh to restart custom servers
+            continue;
           }
           server_tasks.push( tasknum );
         }

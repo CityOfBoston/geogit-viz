@@ -369,7 +369,11 @@ var updateDiff = function(){
 
 // shrink key and hide download in embed mode
 if((window.location + "").indexOf("label=dateonly") > -1){
-  $(".key").css({ zoom: 0.8 });
+  $(".key div").css({
+    padding: "6px 12px",
+    "border-radius": "9px",
+    "font-size": "12px"
+  });
   $("#download").css({ display: "none" });
 }
 
