@@ -161,6 +161,7 @@ module.exports = function(app, models){
       if(err){
         return res.send(err);
       }
+      var timeOffset = 10000; // delay for first server to start
       var runRepo = function(r){
         if(!repos.length || r>=repos.length){
           return res.send('done');
@@ -173,16 +174,29 @@ module.exports = function(app, models){
         if(repo.src == "osm"){
           repotype = "makeosm";
         }
-        var directoryCheck = fs.lstatSync("/root/" + repotype + "/" + repo.user + "/" + repo.project + "" + repo.suffix);
-        if(directoryCheck.isDirectory()){
+        var directoryCheck;
+        try{
+          directoryCheck = fs.lstatSync("/root/" + repotype + "/" + repo.user + "/" + repo.project + "" + repo.suffix);
+          directoryCheck = directoryCheck.isDirectory();
+        }
+        catch(e){
+          directoryCheck = false;
+        }
+        if(directoryCheck){
+          //console.log("refresh " + repo.port);
+          req.params.port = repo.port;
           refreshPort( req, res );
         }
         else{
-          return res.json({ deleting: repo });
+          //console.log("delete " + repo.port);
+          repo.remove();
         }
         setTimeout(function(){
           runRepo(r+1);
-        }, 2000);
+        }, timeOffset);
+        if(timeOffset > 3500){
+          timeOffset = 3500;
+        }
       };
       runRepo(0);
     });
