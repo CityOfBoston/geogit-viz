@@ -79,7 +79,7 @@ Store and visualize <a href="http://geogit.org">GeoGit</a> repos in the cloud:
 
 ### Set up GeoGit-as-a-Service
 
-* Install gdal so that you can run ogr2ogr
+* Install gdal and zip to create additional file formats
 
 * Make directories /root/github, /root/makeosm, and /root/empty
 

@@ -31,6 +31,7 @@ div.container
     .span6
       .well
         h3 Create New Project (beta)
+        small Move map to select area
         form(action="/addrepo", method="POST")
           input(type="hidden", name="repotype", value="osm")
           input#north(type="hidden", name="north", value="")

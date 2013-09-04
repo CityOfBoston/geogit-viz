@@ -206,6 +206,32 @@ module.exports = function(app, models){
     res.send('done');
   });
 
+  app.get('/map/:port', function(req, res){
+    models.repos.findOne({ port: 1 * req.params.port }).exec(function(err, repo){
+      if(err){
+        return res.send(err);
+      }
+      if(!repo){
+        return res.render('current', {
+          port: req.params.port,
+          source: "Uninitialized",
+          user: "",
+          project: ""
+        });
+      }
+      if(!repo.coords || !repo.coords.length){
+        repo.coords = [ ];
+      }
+      res.render('current', {
+        port: repo.port,
+        source: repo.src,
+        user: repo.user,
+        project: repo.project,
+        coords: repo.coords.join(",")
+      });
+    });
+  });
+
   app.get('/git/:port', function(req, res){
     models.repos.findOne({ port: 1 * req.params.port }).exec(function(err, repo){
       if(err){

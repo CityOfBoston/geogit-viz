@@ -1,0 +1,30 @@
+#sidebar
+  if user && project
+    h3 #{user}/#{project}
+  h3 Current View
+  strong Map Key
+  br
+  strong Randomized Color
+
+  h4
+    a(href="/git/#{port}") See Commits
+  select#download
+    option(value="", selected="selected") Download latest
+    option(value="shp") Shapefile
+    option(value="gj") GeoJSON
+    //
+      option(value="pg") PostGIS
+      option(value="sl") Spatialite
+#map
+
+link(rel="stylesheet", href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css")
+// [if lte IE 8]
+  link(rel="stylesheet", href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.ie.css")
+link(rel="stylesheet", media="all", type="text/css", href="/stylesheets/style.css")
+
+script(type="text/javascript", src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js")
+
+script(type="text/javascript", src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js")
+
+script(type="text/javascript") var port = #{port}, user = "#{user}", project = "#{project}", source = "#{source}", coords = [#{coords}];
+script(type="text/javascript", src="/scripts/geojson-viz.js")
