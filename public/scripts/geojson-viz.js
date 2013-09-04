@@ -46,21 +46,40 @@ $.getJSON("/" + user + "/" + project + "/current.geojson", function(gj){
       return { opacity: 0.5, fillOpacity: 0.5, color: randcolor, fillColor: randcolor };
     },
     onEachFeature: function(feature, layer){
-      if(source == "osm"){
-        if(feature.geometry.type == "Point"){
-          // convert Leaflet marker to a circle marker
-          var randcolor = "#" + (Math.round(Math.random()*16)).toString(16);
-          randcolor += (Math.round(Math.random()*16)).toString(16);
-          randcolor += (Math.round(Math.random()*16)).toString(16);
-          randcolor += (Math.round(Math.random()*16)).toString(16);
-          randcolor += (Math.round(Math.random()*16)).toString(16);
-          randcolor += (Math.round(Math.random()*16)).toString(16);
-          var circleStyle = { opacity: 0.5, fillOpacity: 0.5, color: randcolor, fillColor: randcolor, radius: 5 };
-          layer = L.circleMarker( layer.getLatLng(), circleStyle );
+      if(feature.geometry.type == "Point"){
+        // convert Leaflet marker to a circle marker
+        var randcolor = "#" + (Math.round(Math.random()*16)).toString(16);
+        randcolor += (Math.round(Math.random()*16)).toString(16);
+        randcolor += (Math.round(Math.random()*16)).toString(16);
+        randcolor += (Math.round(Math.random()*16)).toString(16);
+        randcolor += (Math.round(Math.random()*16)).toString(16);
+        randcolor += (Math.round(Math.random()*16)).toString(16);
+        var circleStyle = { opacity: 0.5, fillOpacity: 0.5, color: randcolor, fillColor: randcolor, radius: 5 };
+        layer = L.circleMarker( layer.getLatLng(), circleStyle );
+      }
+      if(source == "GitHub"){
+        if( typeof feature.properties != "undefined" && Object.keys(feature.properties).length ){
+          var table = "<table border='1'>";
+          var taglength = 0;
+          for(var key in feature.properties){
+            if(feature.properties[key].indexOf("source:") == 0 || feature.properties[key].indexOf("attribution:") == 0){
+              // tags added to points - not useful for user's view
+              continue;
+            }
+            taglength++;
+            table += "<tr><td>" + key + "</td><td>" + feature.properties[key] + "</td></tr>";
+          }
+          table += "</table>";
+          if(taglength){
+            map.addLayer(layer);
+            layer.bindPopup(table);
+          }
         }
+      }
+      if(source == "osm"){
         if(feature.properties.tags){
           var tags = feature.properties.tags.split("|");
-          var table = "<table>";
+          var table = "<table border='1'>";
           var taglength = 0;
           for(var t=0;t<tags.length;t++){
             if(tags[t].indexOf("source:") == 0 || tags[t].indexOf("attribution:") == 0){
@@ -71,8 +90,10 @@ $.getJSON("/" + user + "/" + project + "/current.geojson", function(gj){
             table += "<tr><td>" + tags[t] + "</td></tr>";
           }
           table += "</table>";
-          map.addLayer(layer);
-          layer.bindPopup(table);
+          if(taglength){
+            map.addLayer(layer);
+            layer.bindPopup(table);
+          }
         }
       }
     }
