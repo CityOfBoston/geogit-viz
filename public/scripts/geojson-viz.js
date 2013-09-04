@@ -62,7 +62,10 @@ $.getJSON("/" + user + "/" + project + "/current.geojson", function(gj){
           var table = "<table border='1'>";
           var taglength = 0;
           for(var key in feature.properties){
-            if(feature.properties[key].indexOf("source:") == 0 || feature.properties[key].indexOf("attribution:") == 0){
+            if(!isNaN(key*1)){
+              continue;
+            }
+            if(key.indexOf("source:") == 0 || key.indexOf("attribution:") == 0){
               // tags added to points - not useful for user's view
               continue;
             }
@@ -76,7 +79,7 @@ $.getJSON("/" + user + "/" + project + "/current.geojson", function(gj){
           }
         }
       }
-      if(source == "osm"){
+      if(source == "osm" || source == "user"){
         if(feature.properties.tags){
           var tags = feature.properties.tags.split("|");
           var table = "<table border='1'>";
