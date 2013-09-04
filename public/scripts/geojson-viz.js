@@ -56,6 +56,19 @@ $.getJSON("/" + user + "/" + project + "/current.geojson", function(gj){
         randcolor += (Math.round(Math.random()*16)).toString(16);
         var circleStyle = { opacity: 0.5, fillOpacity: 0.5, color: randcolor, fillColor: randcolor, radius: 5 };
         layer = L.circleMarker( layer.getLatLng(), circleStyle );
+        north = Math.max( north, layer.getLatLng().lat );
+        south = Math.min( south, layer.getLatLng().lat );
+        east = Math.max( east, layer.getLatLng().lng );
+        west = Math.min( west, layer.getLatLng().lng );
+      }
+      else if(layer.getLatLngs()){
+        var latlngs = layer.getLatLngs();
+        for(var pt=0;pt<latlngs.length;pt++){
+          north = Math.max( north, latlngs[pt].lat );
+          south = Math.min( south, latlngs[pt].lat );
+          east = Math.max( east, latlngs[pt].lng );
+          west = Math.min( west, latlngs[pt].lng );
+        }
       }
       if(source == "GitHub"){
         if( typeof feature.properties != "undefined" && Object.keys(feature.properties).length ){
@@ -101,6 +114,14 @@ $.getJSON("/" + user + "/" + project + "/current.geojson", function(gj){
       }
     }
   });
+  if(north > south){
+    // fit all points
+    map.fitBounds([ [south, west], [north, east] ]);
+  }
+  else if(north == south){
+    // one point
+    map.panTo( new L.LatLng( north, east ) );
+  }
 });
 
 // shrink key and hide download in embed mode
