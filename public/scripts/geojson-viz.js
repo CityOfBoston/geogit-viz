@@ -37,12 +37,12 @@ L.tileLayer('http://{s}.tiles.mapbox.com/v3/mapmeld.map-ofpv1ci4/{z}/{x}/{y}.png
 $.getJSON("/" + user + "/" + project + "/current.geojson", function(gj){
   L.geoJson(gj, {
     onEachFeature: function(feature, layer){
-      var randcolor = "#" + (Math.round(Math.random()*16)).toString(16);
-      randcolor += (Math.round(Math.random()*16)).toString(16);
-      randcolor += (Math.round(Math.random()*16)).toString(16);
-      randcolor += (Math.round(Math.random()*16)).toString(16);
-      randcolor += (Math.round(Math.random()*16)).toString(16);
-      randcolor += (Math.round(Math.random()*16)).toString(16);
+      var randcolor = "#" + (Math.floor(Math.random()*16)).toString(16);
+      randcolor += (Math.floor(Math.random()*16)).toString(16);
+      randcolor += (Math.floor(Math.random()*16)).toString(16);
+      randcolor += (Math.floor(Math.random()*16)).toString(16);
+      randcolor += (Math.floor(Math.random()*16)).toString(16);
+      randcolor += (Math.floor(Math.random()*16)).toString(16);
       var randstyle = { opacity: 0.5, fillOpacity: 0.5, color: randcolor, fillColor: randcolor, radius: 5 };
       
       if(typeof layer.getLayers == "function"){
