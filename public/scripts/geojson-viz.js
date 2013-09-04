@@ -36,16 +36,25 @@ L.tileLayer('http://{s}.tiles.mapbox.com/v3/mapmeld.map-ofpv1ci4/{z}/{x}/{y}.png
 // add current GeoJSON
 $.getJSON("/" + user + "/" + project + "/current.geojson", function(gj){
   L.geoJson(gj, {
-    style: function(feature){
+    onEachFeature: function(feature, layer){
       var randcolor = "#" + (Math.round(Math.random()*16)).toString(16);
       randcolor += (Math.round(Math.random()*16)).toString(16);
       randcolor += (Math.round(Math.random()*16)).toString(16);
       randcolor += (Math.round(Math.random()*16)).toString(16);
       randcolor += (Math.round(Math.random()*16)).toString(16);
       randcolor += (Math.round(Math.random()*16)).toString(16);
-      return { opacity: 0.5, fillOpacity: 0.5, color: randcolor, fillColor: randcolor };
-    },
-    onEachFeature: function(feature, layer){
+      var randstyle = { opacity: 0.5, fillOpacity: 0.5, color: randcolor, fillColor: randcolor, radius: 5 };
+      
+      if(typeof layer.getLayers == "function"){
+        var features = layer.getLayers();
+        for(var f=0;f<features.length;f++){
+          features[f].setStyle( randstyle );
+        }
+      }
+      else{
+        layer.setStyle( randstyle );
+      }
+      
       if(feature.geometry.type == "Point"){
         // convert Leaflet marker to a circle marker
         var randcolor = "#" + (Math.round(Math.random()*16)).toString(16);
@@ -54,8 +63,7 @@ $.getJSON("/" + user + "/" + project + "/current.geojson", function(gj){
         randcolor += (Math.round(Math.random()*16)).toString(16);
         randcolor += (Math.round(Math.random()*16)).toString(16);
         randcolor += (Math.round(Math.random()*16)).toString(16);
-        var circleStyle = { opacity: 0.5, fillOpacity: 0.5, color: randcolor, fillColor: randcolor, radius: 5 };
-        layer = L.circleMarker( layer.getLatLng(), circleStyle );
+        layer = L.circleMarker( layer.getLatLng(), randstyle );
         north = Math.max( north, layer.getLatLng().lat );
         south = Math.min( south, layer.getLatLng().lat );
         east = Math.max( east, layer.getLatLng().lng );
