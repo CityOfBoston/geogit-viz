@@ -51,7 +51,7 @@ $.getJSON("/" + user + "/" + project + "/current.geojson", function(gj){
           features[f].setStyle( randstyle );
         }
       }
-      else{
+      else if(typeof layer.setStyle == "function"){
         layer.setStyle( randstyle );
       }
       
