@@ -23,21 +23,24 @@ os.system('rm *.geojson')
 gjout = { "type": "FeatureCollection", "features": [ ] }
 if os.path.isfile('/root/geogit-viz/public/' + repo + '/shp/node.shp'):
   os.system('ogr2ogr node.geojson -f "GeoJSON" /root/geogit-viz/public/' + repo + '/shp/node.shp')
-  gjin = open('node.geojson', 'r')
-  gjout["features"] = json.load( gjin )["features"]
-  gjin.close()
+  gjinfile = open('node.geojson', 'r', encoding="ISO-8859-1")
+  gjin = gjinfile.read()
+  gjout["features"] = json.loads( gjin )["features"]
+  gjinfile.close()
 
 if os.path.isfile('/root/geogit-viz/public/' + repo + '/shp/way.shp'):
   os.system('ogr2ogr way.geojson -f "GeoJSON" /root/geogit-viz/public/' + repo + '/shp/way.shp')
-  gjin = open('way.geojson', 'r')
-  gjout["features"].extend( json.load( gjin )["features"] )
-  gjin.close()
+  gjinfile = open('way.geojson', 'r', encoding="ISO-8859-1")
+  gjin = gjinfile.read()
+  gjout["features"].extend( json.loads( gjin )["features"] )
+  gjinfile.close()
 
 if os.path.isfile('/root/geogit-viz/public/' + repo + '/shp/relation.shp'):
   os.system('ogr2ogr relation.geojson -f "GeoJSON" /root/geogit-viz/public/' + repo + '/shp/relation.shp')
-  gjin = open('relation.geojson', 'r')
-  gjout["features"].extend( json.load( gjin )["features"] )
-  gjin.close()
+  gjinfile = open('relation.geojson', 'r', encoding="ISO-8859-1")
+  gjin = gjinfile.read()
+  gjout["features"].extend( json.loads( gjin )["features"] )
+  gjinfile.close()
 
 gjfile = open('/root/geogit-viz/public/' + repo + '/current.geojson', 'w')
 gjfile.write( json.dumps( gjout ) )
