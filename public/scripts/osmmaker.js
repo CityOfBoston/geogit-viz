@@ -1,4 +1,4 @@
-var map = L.map('map').setView( [ 42.361207, -71.06506 ], 12 );
+var map = L.map('map').setView( [ 42.356, -71.05 ], 12 );
 map.attributionControl.setPrefix('');
 
 L.tileLayer('http://{s}.tiles.mapbox.com/v3/mapmeld.map-ofpv1ci4/{z}/{x}/{y}.png', {
@@ -9,8 +9,10 @@ var focusbox = L.rectangle([ [42.3428127, -71.03 ], [42.368183, -71 ] ], { color
 
 adjustBox();
 map.on('moveend', adjustBox);
+document.getElementById("osmsubmit").disabled = "disabled";
 
 function adjustBox(){
+  document.getElementById("osmsubmit").disabled = "";
   var deltalat = map.getCenter().lat - focusbox.getBounds().getCenter().lat;
   var deltalng = map.getCenter().lng - focusbox.getBounds().getCenter().lng;
   focusbox.setBounds( [
