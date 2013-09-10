@@ -61,7 +61,7 @@ module.exports = function(app, models){
         if(req.body.repotype == "empty"){
           repo.src = "user";
           repo.save(function(err){
-            res.redirect("/wait/" + count);
+            res.redirect("/wait/" + count + "?source=" + repo.src);
 
             exec("mkdir ../empty/" + user + " ; mkdir ../empty/" + user + "/" + project + "" + suffix + "; cp *fromrepo.py ../empty/" + user + "/" + project + "" + suffix + "/", function(err, stdout, stderr){
               exec("(cd ../empty/" + user + "/" + project + "" + suffix + "/; geogit init )", function(err, stdout, stderr){
@@ -82,7 +82,7 @@ module.exports = function(app, models){
               return res.json({ error: "bbox not defined" });
             }
             else{
-              res.redirect("/wait/" + count);
+              res.redirect("/wait/" + count + "?source=" + repo.src);
             }
             exec("mkdir ../makeosm/" + user + " ; mkdir ../makeosm/" + user + "/" + project + "" + suffix + "; cp *fromosm.py ../makeosm/" + user + "/" + project + "" + suffix + "/", function(err, stdout, stderr){
               exec("(cd ../makeosm/" + user + "/" + project + "" + suffix + " ; python3 initfromosm.py " + south + " " + west + " " + north + " " + east + ' )', function(err, stdout, stderr){
@@ -118,7 +118,7 @@ module.exports = function(app, models){
         repo.port = count;
         repo.save(function(err){
           //return res.json( { success: "added", port: (2000 + count) } );
-          res.redirect("/wait/" + count);
+          res.redirect("/wait/" + count + "?source=" + repo.src);
 
           exec("mkdir ../github/" + user + " ; mkdir ../github/" + user + "/" + project + "" + suffix +  "; cp *fromgithub.py ../github/" + user + "/" + project + "" + suffix + "/", function(err, stdout, stderr){
             exec("( cd ../github/" + user + "/" + project + "" + suffix + "; python3 generatefromgithub.py )", function(err, stdout, stderr){
@@ -131,7 +131,7 @@ module.exports = function(app, models){
   });
   
   app.get('/wait/:port', function(req, res){
-    res.render('wait', { port: req.params.port });
+    res.render('wait', { port: req.params.port, source: req.query.source });
   });
 
   app.get('/api', function(req, res){
@@ -334,8 +334,6 @@ module.exports = function(app, models){
     exec("ps aux", function(err, stdout, stderr){
       var tasks = stdout.split('\n');
       var server_tasks = [ ];
-      //return res.send( tasks );
-      res.write('found task list');
       for(var t=0;t<tasks.length;t++){
         if(tasks[t].indexOf("jetty:run") > -1){
           // this is a server task
@@ -350,10 +348,6 @@ module.exports = function(app, models){
               break;
             }
           }
-          if(tasknum * 1 < 8080){
-            // only use /fresh to restart custom servers
-            continue;
-          }
           server_tasks.push( tasknum );
         }
       }
@@ -363,19 +357,12 @@ module.exports = function(app, models){
         phrase = "ls";
       }
       exec(phrase + server_tasks.join(" "), function(err, stdout, stderr){
-        res.write('stopped servers');
         // update all layers
         exec("(cd /root/bikes; python update*.py)", function(err, stdout, stderr){
-          res.write('updated bikes');
           exec("(cd /root/permits; python update*.py)", function(err, stdout, stderr){
-            res.write('updated permits');
             exec("(cd /root/projects; python update*.py)", function(err, stdout, stderr){
-              res.write('updated projects');
               exec("(cd /root/osm; python update*.py)", function(err, stdout, stderr){
-                res.write('updated OSM');
-                exec("(cd /root/GeoGit/src/parent; python runall.py)", function(err, stdout, stderr){
-                  res.end('restarted!');
-                });
+                exec("(cd /root/GeoGit/src/parent; python runall.py)", null);
               });
             });
           });
