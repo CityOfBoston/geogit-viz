@@ -28,6 +28,43 @@ module.exports = function(app, models){
     res.render('localrepo');
   });
   
+  app.get('/draw', function(req, res){
+    res.render('draw', {
+      geojson: "",
+      port: 0,
+      coords: ""
+    });
+  });
+  app.post('/draw', function(req, res){
+    models.repos.find({}).sort('-port').limit(1).exec(function(err, lasts){
+      var last = lasts[0];
+      if(!last || !last.port || isNaN(last.port * 1)){
+        last = { port: 2001 };
+      }
+      var count = (last.port * 1) + 1;
+      var repo = new models.repos();
+      repo.port = count;
+      repo.src = "draw";
+      repo.json = JSON.parse( req.body.json );
+      repo.coords = req.body.coords.split(",");
+      repo.save(function(err){
+        res.redirect('/draw/' + repo.port );
+      });
+    });
+  });
+  app.get('/draw/:port', function(req, res){
+    models.repos.findOne({ port: 1 * req.params.port }).exec(function(err, repo){
+      if(err){
+        return res.send(err);
+      }
+      res.render('draw', {
+        geojson: repo.json,
+        port: repo.port,
+        coords: repo.coords
+      });
+    });
+  });
+  
   app.post('/addrepo', function(req, res){
     var user = req.body.user.toLowerCase();
     var project = req.body.project.toLowerCase();

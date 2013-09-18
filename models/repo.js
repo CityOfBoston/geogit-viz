@@ -10,7 +10,8 @@ module.exports = function(mongoose){
     port: String,
     src: String,
     pushupdate: Boolean,
-    coords: [ ]
+    coords: [ ],
+    json: Object
   });
 
   return mongoose.model(collection, schema);

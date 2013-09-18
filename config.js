@@ -11,7 +11,7 @@ module.exports = function(app, express){
     app.use(express.bodyParser());
     app.use(express.cookieParser());
     app.use(express.session({ secret: process.env.SECRETKEY }));
-    app.use(express.compress());   
+    app.use(express.compress());
     app.use(express.methodOverride());
     app.use(app.router);
     app.use(express.static(__dirname + '/public'));

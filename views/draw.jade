@@ -1,0 +1,34 @@
+#sidebar
+  h3 Drawable View
+
+  if port == 0
+    form(action="/draw", method="POST")
+      input#json(type="hidden", name="json", value="")
+      input#coords(type="hidden", name="coords", value="")
+      input(type="text", name="commit", value="")
+      br
+      input(type="submit", value="Start Map")
+  else
+    h4
+      a(href="/git/#{port}") See Commits
+    select#download
+      option(value="", selected="selected") Download latest
+      option(value="shp") Shapefile
+      option(value="gj") GeoJSON
+
+#map
+
+link(rel="stylesheet", href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css")
+link(rel="stylesheet", href="/stylesheets/leaflet.draw.css")
+// [if lte IE 8]
+  link(rel="stylesheet", href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css")
+  link(rel="stylesheet", href="/stylesheets/leaflet.draw.ie.css")
+link(rel="stylesheet", media="all", type="text/css", href="/stylesheets/style.css")
+
+script(type="text/javascript", src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js")
+script(type="text/javascript", src="/scripts/leaflet.draw.js")
+
+script(type="text/javascript", src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js")
+
+script(type="text/javascript") var port = #{port}, coords = [#{coords}], gj = '#{geojson}';
+script(type="text/javascript", src="/scripts/geogit-draw.js")
