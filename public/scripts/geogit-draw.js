@@ -145,9 +145,6 @@ if(gj && gj.length){
   $("#json").val(gj);
   gj = JSON.parse(gj);
   var gjlayer = L.geoJson(gj, {
-    style: function(feature){
-      return { clickable: false, editable: true };
-    },
     onEachFeature: function(feature, layer){
       drawnLayers.push( feature );
       
@@ -161,7 +158,7 @@ if(gj && gj.length){
       randcolor += (Math.floor(Math.random()*16)).toString(16);
       randcolor += (Math.floor(Math.random()*16)).toString(16);
       randcolor += (Math.floor(Math.random()*16)).toString(16);
-      var randstyle = { opacity: 0.5, fillOpacity: 0.5, color: randcolor, fillColor: randcolor, radius: 5 };
+      var randstyle = { clickable: false, editable: true, opacity: 0.5, fillOpacity: 0.5, color: randcolor, fillColor: randcolor, radius: 5 };
       
       if(typeof layer.getLayers == "function"){
         var features = layer.getLayers();
@@ -184,7 +181,7 @@ if(gj && gj.length){
         layer = L.circleMarker( layer.getLatLng(), randstyle );
       }
     }
-  }).addTo(map);
+  }).addTo(editableLayers);
   
   var bounds = gjlayer.getBounds();
   north = Math.max(north, bounds.getNorthEast().lat);
