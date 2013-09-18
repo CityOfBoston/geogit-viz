@@ -194,7 +194,7 @@ tree = ET.ElementTree(osm)
 tree.write('gjoutput.osm')
 os.system('geogit osm import gjoutput.osm')
 os.system('geogit add')
-message = 'GitHub commit'
+message = 'draw commit'
 os.system('geogit commit -m "' + message + '"')
 
 """
