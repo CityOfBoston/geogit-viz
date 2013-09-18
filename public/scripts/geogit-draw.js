@@ -152,9 +152,12 @@ map.on('draw:deleted', function(e){
 
 // add current GeoJSON
 if(gj && gj.length){
+  $("#json").val(gj);
   gj = JSON.parse(gj);
   var gjlayer = L.geoJson(gj, {
     onEachFeature: function(feature, layer){
+      drawnLayers.push( feature );
+    
       var randcolor = "#" + (Math.floor(Math.random()*16)).toString(16);
       randcolor += (Math.floor(Math.random()*16)).toString(16);
       randcolor += (Math.floor(Math.random()*16)).toString(16);

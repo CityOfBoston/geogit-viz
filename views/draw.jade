@@ -11,7 +11,7 @@
   else
     form(action="/draw", method="POST")
       input(type="hidden", name="port", value="#{port}")
-      input#json(type="hidden", name="json", value='!{geojson}')
+      input#json(type="hidden", name="json", value="")
       input#coords(type="hidden", name="coords", value="#{coords}")
       input(type="text", name="commit", value="")
       br
