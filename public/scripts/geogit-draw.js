@@ -1,6 +1,15 @@
 
-var map = L.map('map', { drawControl: true }).setView( [ 42.361207, -71.06506 ], 12 );
+var map = L.map('map').setView( [ 42.361207, -71.06506 ], 12 );
 map.attributionControl.setPrefix('');
+
+// draw control
+var drawControl = new L.Control.Draw({
+  draw: {
+    rectangle: false,
+    circle: false
+  }
+});
+map.addControl(drawControl);
 
 var south = 90;
 var west = 180;
@@ -73,7 +82,7 @@ map.on('draw:created', function(e){
     feature.geometry = {
       coordinates: [ ]
     };
-    if(pts[0].lng == pts[pts.length-1].lng && pts[0].lat == pts[pts.length-1].lat){
+    if(e.layerType == "polygon" || e.layerType == "rectangle"){
       feature.geometry.type = "Polygon";
       feature.geometry.push( [ ] );
     }
@@ -81,12 +90,15 @@ map.on('draw:created', function(e){
       feature.geometry.type = "LineString";
     }
     for(var p=0;p<pts.length;p++){
-      if(feature.type == "Polygon"){
+      if(feature.geometry.type == "Polygon"){
         feature.geometry.coordinates[0].push( [ pts[p].lng.toFixed(6) * 1, pts[p].lat.toFixed(6) * 1 ] );
       }
       else{
         feature.geometry.coordinates.push( [ pts[p].lng.toFixed(6) * 1, pts[p].lat.toFixed(6) * 1 ] );
       }
+    }
+    if(feature.geometry.type == "Polygon"){
+      feature.geometry.coordinates[0].push( feature.geometry.coordinates[0][0] );
     }
   }
   else{
