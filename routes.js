@@ -48,9 +48,31 @@ module.exports = function(app, models){
         if(repo && repo.src == "draw"){
           repo.json = req.body.json;
           repo.save(function(err){
-            req.params = { port: req.body.port };
-            refreshPort(req, res);
-            res.redirect('/draw/' + req.body.port);
+            exec("ps aux", function(err, stdout, stderr){
+              var tasks = stdout.split('\n');
+              var targettask;
+              for(var t=0;t<tasks.length;t++){
+                if(tasks[t].indexOf("jetty:run") > -1){
+                  // this is a server task
+                  var port = tasks[t].split('port=')[1];
+                  var tasknum = tasks[t].split("root")[1];
+                  if(port == req.body.port){
+                    targettask = tasknum;
+                    break;
+                  }
+                }
+              }
+              var command = "kill -9 ";
+              if(!targettask){
+                command = "ls ";
+                targettask = "";
+              }
+              exec(command + targettask, function(err, stdout, stderr){
+                exec("(cd ../drawn/" + repo.port + "/; python3 updatefromdrawn.py )", function(err, stdout, stderr){
+                  exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/drawn/" + repo.port + " -Djetty.port=" + repo.port, null);
+                });
+              });
+            });
           });
         }
         else{
