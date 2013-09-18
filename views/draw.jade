@@ -1,14 +1,13 @@
 #sidebar
   h3 Drawable View
 
-  if port == 0
-    form(action="/draw", method="POST")
-      input#json(type="hidden", name="json", value="")
-      input#coords(type="hidden", name="coords", value="")
-      input(type="text", name="commit", value="")
-      br
-      input(type="submit", value="Start Map")
-  else
+  form(action="/draw", method="POST")
+    input#json(type="hidden", name="json", value="")
+    input#coords(type="hidden", name="coords", value="")
+    input(type="text", name="commit", value="")
+    br
+    input(type="submit", value="Start Map")
+  if port != 0
     h4
       a(href="/git/#{port}") See Commits
     select#download

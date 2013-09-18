@@ -15,7 +15,7 @@ try:
   gj = json.loads( urllib.urlopen( detailURL ).readall().decode('utf-8') )
 except:
   print( "not valid JSON!" )
-  return
+  #return
   
 osm = ET.Element('osm')
 osm.set('version', '0.6')
@@ -23,7 +23,7 @@ osm.set('generator', 'geogit-viz-geojson')
 
 # convert these features to OSM XML
 featureCount = 1
-allfeatures.extend( gj["features"] )
+allfeatures = gj["features"]
 for feature in gj["features"]:
   id = featureCount
   if("id" in feature):
