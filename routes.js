@@ -35,7 +35,53 @@ module.exports = function(app, models){
       coords: ""
     });
   });
+  app.get('/drawn/:port', function(req, res){
+    // quick function to get stored JSON for commits
+    models.repos.findOne({ port: 1 * req.params.port }).exec(function(err, repo){
+      res.send( repo.json );
+    });
+  });
   app.post('/draw', function(req, res){
+    if(req.body.port){
+      // updating existing
+      models.repos.findOne({ port: 1 * req.body.port }).exec(function(err, repo){
+        if(repo && repo.src == "draw"){
+          repo.json = req.body.json;
+          repo.save(function(err){
+            exec("ps aux", function(err, stdout, stderr){
+              var tasks = stdout.split('\n');
+              var targettask;
+              for(var t=0;t<tasks.length;t++){
+                if(tasks[t].indexOf("jetty:run") > -1){
+                  // this is a server task
+                  var port = tasks[t].split('port=')[1];
+                  var tasknum = tasks[t].split("root")[1];
+                  if(port == req.body.port){
+                    targettask = tasknum;
+                    break;
+                  }
+                }
+              }
+              var command = "kill -9 ";
+              if(!targettask){
+                command = "ls ";
+                targettask = "";
+              }
+              exec(command + targettask, function(err, stdout, stderr){
+                exec("(cd ../drawn/" + repo.port + "/; python3 updatefromdrawn.py )", function(err, stdout, stderr){
+                  exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/drawn/" + repo.port + " -Djetty.port=" + repo.port, null);
+                });
+              });
+            });
+          });
+        }
+        else{
+          res.json({ error: "not drawn repo" });
+        }
+      });
+      return;
+    }
+    // no port provided - requesting new repo
     models.repos.find({}).sort('-port').limit(1).exec(function(err, lasts){
       var last = lasts[0];
       if(!last || !last.port || isNaN(last.port * 1)){
@@ -49,6 +95,12 @@ module.exports = function(app, models){
       repo.coords = req.body.coords.split(",");
       repo.save(function(err){
         res.redirect('/draw/' + repo.port );
+        // create a directory
+        exec("mkdir ../drawn/" + repo.port + " ; cp *fromdrawn.py ../drawn/" + repo.port + "/", function(err, stdout, stderr){
+          exec("(cd ../drawn/" + repo.port + "/; python3 initfromdrawn.py )", function(err, stdout, stderr){
+            exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/drawn/" + repo.port + " -Djetty.port=" + repo.port, null);
+          });
+        });
       });
     });
   });
@@ -314,7 +366,7 @@ module.exports = function(app, models){
           }
         }
       }
-      var command = "kill -9"
+      var command = "kill -9";
       if(!targettask){
         command = "ls";
         targettask = "";

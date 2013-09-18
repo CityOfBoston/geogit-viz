@@ -60,14 +60,15 @@ map.on('draw:created', function(e){
   $("#coords").val( south.toFixed(6) + "," + west.toFixed(6) + "," + north.toFixed(6) + "," + east.toFixed(6) );
   
   // update JSON
-  var feature = { type: "Feature" };
-  if(typeof e.layer.getLatLng == "function"){
+  var feature = { type: "Feature", id: e.layer.id };
+  if(e.layerType == "marker"){
     feature.geometry = {
       type: "Point",
       coordinates: [ e.layer.getLatLng().lng.toFixed(6) * 1, e.layer.getLatLng().lat.toFixed(6) * 1 ]
     };
   }
   else if(typeof e.layer.getLatLngs == "function"){
+    // presuming polyline, polygon, rectangle
     var pts = e.layer.getLatLngs();
     feature.geometry = {
       coordinates: [ ]
@@ -88,11 +89,65 @@ map.on('draw:created', function(e){
       }
     }
   }
+  else{
+    // circle might go here
+    console.log( e.layer );
+    console.log( e.layerType );
+  }
   drawnLayers.push( feature );
   $("#json").val('{ "type": "FeatureCollection", "features": ' + JSON.stringify( drawnLayers ) + ' }');
   
   // add to map
   map.addLayer( e.layer );
+});
+
+map.on('draw:edited', function(e){
+  // update any edited layers from the GeoJSON
+  for(var i=0;i<e.layers.length;i++){
+    if(typeof e.layers[i].id != "undefined"){
+      for(var f=0;f<drawnLayers.length;f++){
+        if(drawnLayers[f].id == e.layers[i].id){
+          var feature = drawnLayers[f];
+          if(feature.geometry.type == "Point"){
+            var pt = e.layers[i].getLatLng();
+            feature.geometry.coordinates = [ pt.lng.toFixed(6) * 1, pt.lat.toFixed(6) * 1 ];
+          }
+          else if(typeof e.layer.getLatLngs == "function"){
+            var pts = e.layer.getLatLngs();
+            if(feature.geometry.type == "Polygon"){
+              feature.geometry.coordinates = [ [ ] ];
+              for(var p=0;p<pts.length;p++){
+                feature.geometry.coordinates[0].push( [ pts[p].lng.toFixed(6) * 1, pts[p].lat.toFixed(6) * 1 ] );
+              }
+            }
+            else{
+              feature.geometry.coordinates = [ ];
+              for(var p=0;p<pts.length;p++){
+                feature.geometry.coordinates.push( [ pts[p].lng.toFixed(6) * 1, pts[p].lat.toFixed(6) * 1 ] );
+              }
+            }
+          }
+          break;
+        }
+      }
+    }
+  }
+  $("#json").val('{ "type": "FeatureCollection", "features": ' + JSON.stringify( drawnLayers ) + ' }');
+
+});
+map.on('draw:deleted', function(e){
+  // remove any deleted layers from the GeoJSON
+  for(var i=0;i<e.layers.length;i++){
+    if(typeof e.layers[i].id != "undefined"){
+      for(var f=0;f<drawnLayers.length;f++){
+        if(drawnLayers[f].id == e.layers[i].id){
+          drawnLayers.splice(f, 1);
+          break;
+        }
+      }
+    }
+  }
+  $("#json").val('{ "type": "FeatureCollection", "features": ' + JSON.stringify( drawnLayers ) + ' }');
 });
 
 // add current GeoJSON
