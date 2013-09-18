@@ -293,7 +293,7 @@ var commitTimer = setInterval(checkForCommit, 2000);
 function checkForCommit(){
   // call for commit log
   var s = document.createElement('script');
-  s.src = myurl + ":" + port + "/geogit/log?output_format=json&callback=foundServer&show=1&t=" + (new Date()) * 1);
+  s.src = myurl + ":" + port + "/geogit/log?output_format=json&callback=foundServer&show=1&t=" + ((new Date()) * 1);
   s.type = "text/javascript";
   s.onload = function(){
     calledback = true;
@@ -302,7 +302,7 @@ function checkForCommit(){
     // firewall - port is timing out
     if(calledback){ return; }
     var s = document.createElement('script');
-    s.src = myurl + "/" + port + "/geogit/log?output_format=json&callback=foundServer&show=1&t=" + (new Date()) * 1);
+    s.src = myurl + "/" + port + "/geogit/log?output_format=json&callback=foundServer&show=1&t=" + ((new Date()) * 1);
     s.type = "text/javascript";
     $(document.body).append(s);
   };
