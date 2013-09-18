@@ -3,10 +3,16 @@ var map = L.map('map').setView( [ 42.361207, -71.06506 ], 12 );
 map.attributionControl.setPrefix('');
 
 // draw control
+var editableLayers = new L.FeatureGroup();
+map.addLayer(editableLayers);
 var drawControl = new L.Control.Draw({
   draw: {
     rectangle: false,
     circle: false
+  },
+  edit: {
+    featureGroup: editableLayers,
+    remove: false
   }
 });
 map.addControl(drawControl);
