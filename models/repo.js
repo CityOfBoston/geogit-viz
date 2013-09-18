@@ -11,7 +11,8 @@ module.exports = function(mongoose){
     src: String,
     pushupdate: Boolean,
     coords: [ ],
-    json: String
+    json: String,
+    commit: String
   });
 
   return mongoose.model(collection, schema);

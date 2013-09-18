@@ -11,8 +11,7 @@ var drawControl = new L.Control.Draw({
     circle: false
   },
   edit: {
-    featureGroup: editableLayers,
-    remove: false
+    featureGroup: editableLayers
   }
 });
 map.addControl(drawControl);
@@ -285,4 +284,33 @@ function updateLayer(layer){
       }
     }
   }
+}
+
+// check ready for commit
+var calledback = false;
+var commitTimer = setInterval(checkForCommit, 2000);
+
+function checkForCommit(){
+  // call for commit log
+  var s = document.createElement('script');
+  s.src = myurl + ":" + port + "/geogit/log?output_format=json&callback=foundServer&show=1&t=" + (new Date()) * 1);
+  s.type = "text/javascript";
+  s.onload = function(){
+    calledback = true;
+  };
+  s.onerror = function(){
+    // firewall - port is timing out
+    if(calledback){ return; }
+    var s = document.createElement('script');
+    s.src = myurl + "/" + port + "/geogit/log?output_format=json&callback=foundServer&show=1&t=" + (new Date()) * 1);
+    s.type = "text/javascript";
+    $(document.body).append(s);
+  };
+  $(document.body).append(s);
+  setTimeout(s.onerror, 2600);
+}
+function foundServer(){
+  clearInterval(commitTimer);
+  commitTimer = null;
+  $("#editbutton")[0].disabled = "";
 }

@@ -38,7 +38,12 @@ module.exports = function(app, models){
   app.get('/drawn/:port', function(req, res){
     // quick function to get stored JSON for commits
     models.repos.findOne({ port: 1 * req.params.port }).exec(function(err, repo){
-      res.send( repo.json );
+      if(req.query.version == "2"){
+        res.send({ geo: repo.json, commit: (repo.commit || "draw commit") });      
+      }
+      else{
+        res.send({ repo.json );
+      }
     });
   });
   app.post('/draw', function(req, res){
@@ -47,6 +52,7 @@ module.exports = function(app, models){
       models.repos.findOne({ port: 1 * req.body.port }).exec(function(err, repo){
         if(repo && repo.src == "draw"){
           repo.json = req.body.json;
+          repo.commit = req.body.commit || "draw commit";
           repo.save(function(err){
             res.redirect('/draw/' + repo.port);
             exec("ps aux", function(err, stdout, stderr){

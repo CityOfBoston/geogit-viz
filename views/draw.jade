@@ -5,8 +5,7 @@
     form(action="/draw", method="POST")
       input#json(type="hidden", name="json", value="")
       input#coords(type="hidden", name="coords", value="")
-      //
-        input(type="text", name="commit", value="")
+      input(type="text", name="commit", value="initial commit")
       br
       input(type="submit", value="Start Map")
   else
@@ -14,10 +13,9 @@
       input(type="hidden", name="port", value="#{port}")
       input#json(type="hidden", name="json", value="")
       input#coords(type="hidden", name="coords", value="#{coords}")
-      //
-        input(type="text", name="commit", value="")
+      input(type="text", name="commit", value="", placeholder="commit message")
       br
-      input(type="submit", value="Edit Map")
+      input#editbutton(type="submit", disabled="disabled", value="Edit Map")
     h4
       a(href="/git/#{port}") See Commits
     select#download

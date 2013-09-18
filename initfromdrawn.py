@@ -9,10 +9,12 @@ path = os.path.abspath('').split('/')
 port = path[ len(path) - 1 ]
 
 os.system('geogit init /root/drawn/' + port)
-detailURL = "http://geoginger.com/drawn/" + port
+detailURL = "http://geoginger.com/drawn/" + port + "?version=2"
 
 try:
-  gj = json.loads( urllib.urlopen( detailURL ).readall().decode('utf-8') )
+  myjson = json.loads( urllib.urlopen( detailURL ).readall().decode('utf-8') )
+  gj = myjson["geo"]
+  message = myjson["commit"].replace('"', "'").replace("\\", "\\\\")
 except:
   print( "not valid JSON!" )
   #return
@@ -194,7 +196,6 @@ tree = ET.ElementTree(osm)
 tree.write('gjoutput.osm')
 os.system('geogit osm import gjoutput.osm')
 os.system('geogit add')
-message = 'draw commit'
 os.system('geogit commit -m "' + message + '"')
 
 """
