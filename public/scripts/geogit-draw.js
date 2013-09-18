@@ -90,7 +90,7 @@ map.on('draw:created', function(e){
     };
     if(e.layerType == "polygon" || e.layerType == "rectangle"){
       feature.geometry.type = "Polygon";
-      feature.geometry.push( [ ] );
+      feature.geometry.coordinates.push( [ ] );
     }
     else{
       feature.geometry.type = "LineString";
@@ -116,7 +116,7 @@ map.on('draw:created', function(e){
   $("#json").val('{ "type": "FeatureCollection", "features": ' + JSON.stringify( drawnLayers ) + ' }');
   
   // add to map
-  map.addLayer( e.layer );
+  editableLayers.addLayer( e.layer );
 });
 
 map.on('draw:edited', function(e){
