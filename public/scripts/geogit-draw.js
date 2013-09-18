@@ -64,7 +64,7 @@ map.on('draw:created', function(e){
   if(typeof e.layer.getLatLng == "function"){
     feature.geometry = {
       type: "Point",
-      coordinates: [ e.layer.getLatLng().lng.toFixed(6), e.layer.getLatLng().lat.toFixed(6) ]
+      coordinates: [ e.layer.getLatLng().lng.toFixed(6) * 1, e.layer.getLatLng().lat.toFixed(6) * 1 ]
     };
   }
   else if(typeof e.layer.getLatLngs == "function"){
@@ -81,10 +81,10 @@ map.on('draw:created', function(e){
     }
     for(var p=0;p<pts.length;p++){
       if(feature.type == "Polygon"){
-        feature.geometry.coordinates[0].push( [ pts[p].lng.toFixed(6), pts[p].lat.toFixed(6) ] );
+        feature.geometry.coordinates[0].push( [ pts[p].lng.toFixed(6) * 1, pts[p].lat.toFixed(6) * 1 ] );
       }
       else{
-        feature.geometry.coordinates.push( [ pts[p].lng.toFixed(6), pts[p].lat.toFixed(6) ] );
+        feature.geometry.coordinates.push( [ pts[p].lng.toFixed(6) * 1, pts[p].lat.toFixed(6) * 1 ] );
       }
     }
   }
@@ -98,7 +98,7 @@ map.on('draw:created', function(e){
 // add current GeoJSON
 if(gj && gj.length){
   gj = JSON.parse(gj);
-  L.geoJson(gj, {
+  var gjlayer = L.geoJson(gj, {
     onEachFeature: function(feature, layer){
       var randcolor = "#" + (Math.floor(Math.random()*16)).toString(16);
       randcolor += (Math.floor(Math.random()*16)).toString(16);
@@ -127,22 +127,16 @@ if(gj && gj.length){
         randcolor += (Math.round(Math.random()*16)).toString(16);
         randcolor += (Math.round(Math.random()*16)).toString(16);
         layer = L.circleMarker( layer.getLatLng(), randstyle );
-        north = Math.max( north, layer.getLatLng().lat );
-        south = Math.min( south, layer.getLatLng().lat );
-        east = Math.max( east, layer.getLatLng().lng );
-        west = Math.min( west, layer.getLatLng().lng );
-      }
-      else if(layer.getLatLngs()){
-        var latlngs = layer.getLatLngs();
-        for(var pt=0;pt<latlngs.length;pt++){
-          north = Math.max( north, latlngs[pt].lat );
-          south = Math.min( south, latlngs[pt].lat );
-          east = Math.max( east, latlngs[pt].lng );
-          west = Math.min( west, latlngs[pt].lng );
-        }
       }
     }
-  });
+  }).addTo(map);
+  
+  var bounds = gjlayer.getBounds();
+  north = Math.max(north, bounds.getNorthEast().lat);
+  south = Math.min(south, bounds.getSouthWest().lat);
+  east = Math.max(east, bounds.getNorthEast().lng);
+  west = Math.min(west, bounds.getSouthWest().lng); 
+  
   if(north > south){
     // fit all points
     map.fitBounds([ [south, west], [north, east] ]);
