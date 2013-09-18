@@ -45,7 +45,7 @@ module.exports = function(app, models){
       var repo = new models.repos();
       repo.port = count;
       repo.src = "draw";
-      repo.json = JSON.parse( req.body.json );
+      repo.json = req.body.json;
       repo.coords = req.body.coords.split(",");
       repo.save(function(err){
         res.redirect('/draw/' + repo.port );
