@@ -216,6 +216,10 @@ var logged = function(json){
       // local repo
       $("#commitlist").text("GeoGit repo may have failed. Please contact ndoiron@mapmeld.com");
     }
+    else if(source == "draw"){
+      // local repo
+      $("#commitlist").text("Draw repo may have failed. Please contact ndoiron@mapmeld.com");
+    }
     return;
   }
   else if(typeof json.response.success != "undefined" && typeof json.response.commit == "undefined"){
@@ -233,6 +237,10 @@ var logged = function(json){
       $("#commitlist").text("GitHub repo has no commits. Does <a href='https://github.com/" + user + "/" + project + "'>your repo</a> contain GeoJSON data? Is the GeoJSON visible on GitHub? Please contact ndoiron@mapmeld.com for help.");
     }
     else if(source == "user"){
+      // local repo
+      $("#commitlist").text("GeoGinger is ready for your commits. Use 'geogit remote add gg http://geoginger.com:" + port + "' to connect to this repo, then 'geogit push gg' to push GeoGit commits.");
+    }
+    else if(source == "draw"){
       // local repo
       $("#commitlist").text("GeoGinger is ready for your commits. Use 'geogit remote add gg http://geoginger.com:" + port + "' to connect to this repo, then 'geogit push gg' to push GeoGit commits.");
     }
@@ -255,6 +263,10 @@ var logged = function(json){
     else if(source == "user"){
       // local repo
       $("#commitlist").text("First commit succeeded! Make a change to your local GeoGit repo, then push to GeoGinger.");
+    }
+    else if(source == "draw"){
+      // local repo
+      $("#commitlist").text("First commit succeeded! Edit and add new shapes on http://geoginger.com/draw/" + port);
     }
     return;
   }

@@ -149,7 +149,7 @@ map.on('draw:edited', function(e){
         }
       }
     }
-  }
+  });
   $("#json").val('{ "type": "FeatureCollection", "features": ' + JSON.stringify( drawnLayers ) + ' }');
 
 });
