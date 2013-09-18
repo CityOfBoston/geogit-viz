@@ -147,10 +147,6 @@ if(gj && gj.length){
   var gjlayer = L.geoJson(gj, {
     onEachFeature: function(feature, layer){
       drawnLayers.push( feature );
-      
-      layer.on('edit', function(e){
-        updateLayer( layer );
-      });
     
       var randcolor = "#" + (Math.floor(Math.random()*16)).toString(16);
       randcolor += (Math.floor(Math.random()*16)).toString(16);
@@ -165,11 +161,15 @@ if(gj && gj.length){
         for(var f=0;f<features.length;f++){
           features[f].setStyle( randstyle );
           features[f].addTo(editableLayers)
+          bindUpdate(features[f]);
         }
       }
       else if(typeof layer.setStyle == "function"){
         layer.setStyle( randstyle );
         layer.addTo(editableLayers);
+        layer.on('edit', function(e){
+          updateLayer( layer );
+        });
       }
       
       if(feature.geometry.type == "Point"){
@@ -249,7 +249,15 @@ $("#download").on("change", function(){
   $("#download").val("");
 });
 
+function bindUpdate(layer){
+  layer.on('edit', function(e){
+    updateLayer( layer );
+  });
+}
 function updateLayer(layer){
+  if(typeof layer.id == "undefined" && typeof layer.feature.id != "undefined"){
+    layer.id = layer.feature.id;
+  }
   if(typeof layer.id != "undefined"){
     for(var f=0;f<drawnLayers.length;f++){
       if(drawnLayers[f].id == layer.id){
