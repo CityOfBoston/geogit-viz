@@ -42,7 +42,7 @@ module.exports = function(app, models){
         res.send({ geo: repo.json, commit: (repo.commit || "draw commit") });      
       }
       else{
-        res.send({ repo.json );
+        res.send({ repo.json });
       }
     });
   });
