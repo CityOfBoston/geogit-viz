@@ -121,17 +121,17 @@ map.on('draw:created', function(e){
 
 map.on('draw:edited', function(e){
   // update any edited layers from the GeoJSON
-  for(var i=0;i<e.layers.length;i++){
-    if(typeof e.layers[i].id != "undefined"){
+  e.layers.eachLayer(function(layer){
+    if(typeof layer.id != "undefined"){
       for(var f=0;f<drawnLayers.length;f++){
-        if(drawnLayers[f].id == e.layers[i].id){
+        if(drawnLayers[f].id == layer.id){
           var feature = drawnLayers[f];
           if(feature.geometry.type == "Point"){
-            var pt = e.layers[i].getLatLng();
+            var pt = layer.getLatLng();
             feature.geometry.coordinates = [ pt.lng.toFixed(6) * 1, pt.lat.toFixed(6) * 1 ];
           }
-          else if(typeof e.layer.getLatLngs == "function"){
-            var pts = e.layer.getLatLngs();
+          else if(typeof layer.getLatLngs == "function"){
+            var pts = layer.getLatLngs();
             if(feature.geometry.type == "Polygon"){
               feature.geometry.coordinates = [ [ ] ];
               for(var p=0;p<pts.length;p++){
@@ -155,16 +155,16 @@ map.on('draw:edited', function(e){
 });
 map.on('draw:deleted', function(e){
   // remove any deleted layers from the GeoJSON
-  for(var i=0;i<e.layers.length;i++){
-    if(typeof e.layers[i].id != "undefined"){
+  e.layers.eachLayer(function(layer){
+    if(typeof layer.id != "undefined"){
       for(var f=0;f<drawnLayers.length;f++){
-        if(drawnLayers[f].id == e.layers[i].id){
+        if(drawnLayers[f].id == layer.id){
           drawnLayers.splice(f, 1);
           break;
         }
       }
     }
-  }
+  });
   $("#json").val('{ "type": "FeatureCollection", "features": ' + JSON.stringify( drawnLayers ) + ' }');
 });
 
@@ -205,7 +205,7 @@ if(gj && gj.length){
         layer = L.circleMarker( layer.getLatLng(), randstyle );
       }
     }
-  }).addTo(map);
+  }).addTo(editableLayers);
   
   var bounds = gjlayer.getBounds();
   north = Math.max(north, bounds.getNorthEast().lat);
