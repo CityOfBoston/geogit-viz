@@ -288,8 +288,10 @@ function updateLayer(layer){
 
 // check ready for commit
 var calledback = false;
-var commitTimer = setInterval(checkForCommit, 2000);
-
+var commitTimer;
+if(port && port != 0){
+  setInterval(checkForCommit, 2000);
+}
 function checkForCommit(){
   // call for commit log
   var s = document.createElement('script');
