@@ -48,6 +48,7 @@ module.exports = function(app, models){
         if(repo && repo.src == "draw"){
           repo.json = req.body.json;
           repo.save(function(err){
+            res.redirect('/draw/' + repo.port);
             exec("ps aux", function(err, stdout, stderr){
               var tasks = stdout.split('\n');
               var targettask;
