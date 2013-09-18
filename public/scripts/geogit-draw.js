@@ -164,10 +164,12 @@ if(gj && gj.length){
         var features = layer.getLayers();
         for(var f=0;f<features.length;f++){
           features[f].setStyle( randstyle );
+          features[f].addTo(editableLayers)
         }
       }
       else if(typeof layer.setStyle == "function"){
         layer.setStyle( randstyle );
+        layer.addTo(editableLayers);
       }
       
       if(feature.geometry.type == "Point"){
@@ -181,7 +183,7 @@ if(gj && gj.length){
         layer = L.circleMarker( layer.getLatLng(), randstyle );
       }
     }
-  }).addTo(editableLayers);
+  });
   
   var bounds = gjlayer.getBounds();
   north = Math.max(north, bounds.getNorthEast().lat);
