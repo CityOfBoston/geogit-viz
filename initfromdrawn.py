@@ -12,9 +12,8 @@ os.system('geogit init /root/drawn/' + port)
 detailURL = "http://geoginger.com/drawn/" + port + "?version=2"
 
 try:
-  myjson = json.loads( urllib.urlopen( detailURL ).readall().decode('utf-8') )
-  gj = myjson["geo"]
-  message = myjson["commit"].replace('"', "'").replace("\\", "\\\\")
+  gj = json.loads( urllib.urlopen( detailURL ).readall().decode('utf-8') )
+  message = gj["commit"].replace('"', "'").replace("\\", "\\\\")
 except:
   print( "not valid JSON!" )
   #return

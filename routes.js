@@ -39,7 +39,7 @@ module.exports = function(app, models){
     // quick function to get stored JSON for commits
     models.repos.findOne({ port: 1 * req.params.port }).exec(function(err, repo){
       if(req.query.version == "2"){
-        res.json({ geo: repo.json, commit: (repo.commit || "draw commit") });      
+        res.send( repo.json.replace('"type": "FeatureCollection"', '"type": "FeatureCollection", "commit": "' + (repo.commit || "draw commit") + '"' ) );      
       }
       else{
         res.send( repo.json );
