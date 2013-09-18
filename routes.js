@@ -39,10 +39,10 @@ module.exports = function(app, models){
     // quick function to get stored JSON for commits
     models.repos.findOne({ port: 1 * req.params.port }).exec(function(err, repo){
       if(req.query.version == "2"){
-        res.send({ geo: repo.json, commit: (repo.commit || "draw commit") });      
+        res.json({ geo: repo.json, commit: (repo.commit || "draw commit") });      
       }
       else{
-        res.send({ repo.json });
+        res.send( repo.json );
       }
     });
   });
