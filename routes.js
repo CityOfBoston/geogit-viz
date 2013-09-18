@@ -99,6 +99,7 @@ module.exports = function(app, models){
       repo.port = count;
       repo.src = "draw";
       repo.json = req.body.json;
+      repo.commit = req.body.commit || "draw commit";
       repo.coords = req.body.coords.split(",");
       repo.save(function(err){
         res.redirect('/draw/' + repo.port );
