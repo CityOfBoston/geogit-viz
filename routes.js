@@ -271,6 +271,12 @@ module.exports = function(app, models){
         if(repo.src == "osm"){
           repotype = "makeosm";
         }
+        if(repo.src == "draw"){
+          repotype = "drawn";
+          repo.user = repo.port;
+          repo.project = '.';
+          repo.suffix = "";
+        }
         var directoryCheck;
         try{
           directoryCheck = fs.lstatSync("/root/" + repotype + "/" + repo.user + "/" + repo.project + "" + repo.suffix);
