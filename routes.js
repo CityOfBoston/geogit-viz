@@ -104,7 +104,7 @@ module.exports = function(app, models){
       repo.save(function(err){
         res.redirect('/draw/' + repo.port );
         // create a directory
-        exec("mkdir ../drawn/" + repo.port + " ; cp *fromdrawn.py ../drawn/" + repo.port + "/", function(err, stdout, stderr){
+        exec("mkdir ../drawn/" + repo.port + " ; cp repo_scripts/*fromdrawn.py ../drawn/" + repo.port + "/", function(err, stdout, stderr){
           exec("(cd ../drawn/" + repo.port + "/; python3 initfromdrawn.py )", function(err, stdout, stderr){
             exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/drawn/" + repo.port + " -Djetty.port=" + repo.port, null);
           });
@@ -160,7 +160,7 @@ module.exports = function(app, models){
           repo.save(function(err){
             res.redirect("/wait/" + count + "?source=" + repo.src);
 
-            exec("mkdir ../empty/" + user + " ; mkdir ../empty/" + user + "/" + project + "" + suffix + "; cp *fromrepo.py ../empty/" + user + "/" + project + "" + suffix + "/", function(err, stdout, stderr){
+            exec("mkdir ../empty/" + user + " ; mkdir ../empty/" + user + "/" + project + "" + suffix + "; cp repo_scripts/*fromrepo.py ../empty/" + user + "/" + project + "" + suffix + "/", function(err, stdout, stderr){
               exec("(cd ../empty/" + user + "/" + project + "" + suffix + "/; geogit init )", function(err, stdout, stderr){
                 exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/empty/" + user + "/" + project + "" + suffix + " -Djetty.port=" + count, null);
               });
@@ -181,7 +181,7 @@ module.exports = function(app, models){
             else{
               res.redirect("/wait/" + count + "?source=" + repo.src);
             }
-            exec("mkdir ../makeosm/" + user + " ; mkdir ../makeosm/" + user + "/" + project + "" + suffix + "; cp *fromosm.py ../makeosm/" + user + "/" + project + "" + suffix + "/", function(err, stdout, stderr){
+            exec("mkdir ../makeosm/" + user + " ; mkdir ../makeosm/" + user + "/" + project + "" + suffix + "; cp repo_scripts/*fromosm.py ../makeosm/" + user + "/" + project + "" + suffix + "/", function(err, stdout, stderr){
               exec("(cd ../makeosm/" + user + "/" + project + "" + suffix + " ; python3 initfromosm.py " + south + " " + west + " " + north + " " + east + ' )', function(err, stdout, stderr){
                 exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/makeosm/" + user + "/" + project + "" + suffix + " -Djetty.port=" + count, null);
               });
@@ -217,7 +217,7 @@ module.exports = function(app, models){
           //return res.json( { success: "added", port: (2000 + count) } );
           res.redirect("/wait/" + count + "?source=" + repo.src);
 
-          exec("mkdir ../github/" + user + " ; mkdir ../github/" + user + "/" + project + "" + suffix +  "; cp *fromgithub.py ../github/" + user + "/" + project + "" + suffix + "/", function(err, stdout, stderr){
+          exec("mkdir ../github/" + user + " ; mkdir ../github/" + user + "/" + project + "" + suffix +  "; cp repo_scripts/*fromgithub.py ../github/" + user + "/" + project + "" + suffix + "/", function(err, stdout, stderr){
             exec("( cd ../github/" + user + "/" + project + "" + suffix + "; python3 generatefromgithub.py )", function(err, stdout, stderr){
               exec("mvn jetty:run -pl ../web/app -f /root/GeoGit/src/parent/pom.xml -Dorg.geogit.web.repository=/root/github/" + user + "/" + project + "" + suffix + " -Djetty.port=" + count, null);
             });

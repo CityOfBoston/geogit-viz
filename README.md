@@ -4,11 +4,11 @@ Store and visualize <a href="http://geogit.org">GeoGit</a> repos in the cloud:
 
 * Create GeoGit repo from a local repo, GitHub, or OpenStreetMap
 
-<img src="https://raw.github.com/CityOfBoston/geogit-viz/master/osmimport.png"/>
+<img src="https://raw.github.com/CityOfBoston/geogit-viz/master/screenshots/osmimport.png"/>
 
 * Dial-a-Diff: compare any commits in the GeoGit repo history
 
-<img src="https://raw.github.com/CityOfBoston/geogit-viz/master/dialadiff.png"/>
+<img src="https://raw.github.com/CityOfBoston/geogit-viz/master/screenshots/dialadiff.png"/>
 
 * Download: get the latest version in GeoJSON, OSM XML, and Shapefile formats
 
